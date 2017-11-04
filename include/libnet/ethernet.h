@@ -16,6 +16,21 @@ extern "C"
 {
 #endif
 
+/// @brief Used to indicate which
+/// protocol is encapsulated in the
+/// payload.
+enum libnet_ethertype
+{
+	/// @brief No procotol in the payload.
+	LIBNET_ETHERTYPE_NONE,
+	/// @brief The protocol is ARP.
+	LIBNET_ETHERTYPE_ARP,
+	/// @brief The protocol is IPv4.
+	LIBNET_ETHERTYPE_IPv4,
+	/// @brief The protocol is IPv6.
+	LIBNET_ETHERTYPE_IPv6
+};
+
 /// @brief Ethernet protocol variables.
 struct libnet_ethernet
 {
@@ -23,7 +38,23 @@ struct libnet_ethernet
 	struct libnet_mac destination;
 	/// @brief Source MAC address.
 	struct libnet_mac source;
+	/// @brief Indicates what protocol,
+	/// if any, is in the payload.
+	enum libnet_ethertype type;
 };
+
+/// @brief Initializes the ethernet protocol.
+void libnet_ethernet_init(struct libnet_ethernet *ethernet);
+
+/// @brief Sets the source MAC address for the ethernet headers.
+int libnet_ethernet_set_source(struct libnet_ethernet *ethernet,
+                               const char *src,
+                               unsigned long long int src_size);
+
+/// @brief Sets the destination MAC address for the ethernet headers.
+int libnet_ethernet_set_destination(struct libnet_ethernet *ethernet,
+                                    const char *dst,
+                                    unsigned long long int dst_size);
 
 #ifdef __cplusplus
 } // extern "C"
