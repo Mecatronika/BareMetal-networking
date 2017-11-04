@@ -24,6 +24,15 @@ void libnet_pipe_done(struct libnet_pipe *pipe)
 		pipe->done(pipe->data);
 }
 
+void libnet_pipe_move(struct libnet_pipe *dst,
+                      struct libnet_pipe *src)
+{
+	// copy the structure
+	*dst = *src;
+	// zero the old structure
+	libnet_pipe_init(src);
+}
+
 int libnet_pipe_recv(struct libnet_pipe *pipe,
                      void *buf,
                      unsigned long long int buf_size,
