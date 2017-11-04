@@ -24,3 +24,4 @@ $AR $ARFLAGS libnet.a \
 	stack.o
 
 $CC $CFLAGS mac-test.c -o mac-test libnet.a
+$CC $CFLAGS ethernet-test.c -o ethernet-test libnet.a
