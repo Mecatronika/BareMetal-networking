@@ -35,6 +35,7 @@
 *.i*86
 *.x86_64
 *.hex
+/src/mac-test
 
 # Debug files
 *.dSYM/
