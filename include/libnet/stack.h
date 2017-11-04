@@ -9,6 +9,7 @@
 #ifndef LIBNET_STACK_H
 #define LIBNET_STACK_H
 
+#include <libnet/pipe.h>
 #include <libnet/protocol.h>
 
 #ifndef LIBNET_PROTOCOL_MAX
@@ -28,6 +29,9 @@ extern const unsigned long long libnet_protocol_max;
 /// @brief A network stack.
 struct libnet_stack
 {
+	/// @brief The pipe used for sending and
+	/// receiving data.
+	struct libnet_pipe pipe;
 	/// @brief An array of protocols that make
 	/// up the network stack.
 	struct libnet_protocol protocol_array[8];
@@ -60,6 +64,12 @@ int libnet_stack_push_tcp(struct libnet_stack *stack);
 /// otherwise. This function will only fail if the stack
 /// is already empty.
 int libnet_stack_pop(struct libnet_stack *stack);
+
+/// @brief Assigns a pipe to the network stack. This function
+/// must be called before @ref libnet_stack_send and @ref libnet_stack_recv
+/// may be used.
+void libnet_stack_set_pipe(struct libnet_stack *stack,
+                           struct libnet_pipe *pipe);
 
 #ifdef __cplusplus
 } // extern "C"
