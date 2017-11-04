@@ -41,12 +41,30 @@ struct libnet_protocol
 	enum libnet_protocol_id id;
 	/// @brief Protocol specific data.
 	void *data;
+	/// @brief Called when the protocol
+	/// is no longer going to be used.
+	void (*done)(void *data);
+	/// @brief Attempts to read data from
+	/// the protocol.
+	int (*read)(void *protocol_data,
+	            void *buf,
+	            unsigned long long int buf_size,
+	            unsigned long long int *read_size);
+	/// @brief Attempts to write data to
+	/// the protocol.
+	int (*write)(void *protocol_data,
+	             const void *buf,
+	             unsigned long long int buf_size,
+	             unsigned long long int *write_size);
 };
 
 /// @brief Initializes the protocol. This initializes
-/// all of thei fields of the structure to prevent segmentation
+/// all of the fields of the structure to prevent segmentation
 /// fauls. It does not assign a real protocol to the structure.
 void libnet_protocol_init(struct libnet_protocol *protocol);
+
+/// @brief Releases resources allocated by the protocol.
+void libnet_protocol_done(struct libnet_protocol *protocol);
 
 #ifdef __cplusplus
 } // extern "C"
