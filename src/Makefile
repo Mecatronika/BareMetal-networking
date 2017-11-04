@@ -9,7 +9,7 @@ CFLAGS += -I ../include
 VPATH += ../include/libnet
 
 .PHONY: all
-all: libnet.a mac-test
+all: libnet.a ethernet-test mac-test
 
 libnet.a: \
 	buffer.o \
@@ -23,6 +23,10 @@ libnet.a: \
 buffer.o: buffer.c buffer.h
 
 ethernet.o: ethernet.c ethernet.h mac.h
+
+ethernet-test.o: ethernet-test.c ethernet.h protocol.h stack.h pipe.h
+
+ethernet-test: ethernet-test.o -lnet
 
 mac.o: mac.c mac.h
 
@@ -43,8 +47,9 @@ clean:
 	$(RM) libnet.a
 
 .PHONY: test
-test: mac-test
+test: mac-test ethernet-test
 	./mac-test
+	./ethernet-test
 
 .PHONY: install
 install:
