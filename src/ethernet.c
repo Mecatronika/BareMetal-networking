@@ -33,6 +33,22 @@ int libnet_ethernet_set_destination(struct libnet_ethernet *ethernet,
 	return libnet_mac_parse(&ethernet->destination, dst, dst_size);
 }
 
+int libnet_ethernet_pack(struct libnet_ethernet *ethernet,
+                         struct libnet_buffer *buffer)
+{
+	(void) ethernet;
+	(void) buffer;
+	return 0;
+}
+
+int libnet_ethernet_unpack(struct libnet_ethernet *ethernet,
+                           struct libnet_buffer *buffer)
+{
+	(void) ethernet;
+	(void) buffer;
+	return 0;
+}
+
 int libnet_ethernet_mutate(struct libnet_ethernet *ethernet,
                            const struct libnet_mutator *mutator)
 {

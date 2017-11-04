@@ -16,6 +16,7 @@ extern "C"
 {
 #endif
 
+struct libnet_buffer;
 struct libnet_mutator;
 
 /// @brief Used to indicate which
@@ -57,6 +58,12 @@ int libnet_ethernet_set_source(struct libnet_ethernet *ethernet,
 int libnet_ethernet_set_destination(struct libnet_ethernet *ethernet,
                                     const char *dst,
                                     unsigned long long int dst_size);
+
+int libnet_ethernet_pack(struct libnet_ethernet *ethernet,
+                         struct libnet_buffer *buffer);
+
+int libnet_ethernet_unpack(struct libnet_ethernet *ethernet,
+                           struct libnet_buffer *buffer);
 
 /// @brief Allow a mutator access to the ethernet parameters.
 int libnet_ethernet_mutate(struct libnet_ethernet *ethernet,
