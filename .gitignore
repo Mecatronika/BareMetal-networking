@@ -35,6 +35,7 @@
 *.i*86
 *.x86_64
 *.hex
+/src/crc-test
 /src/mac-test
 /src/ethernet-test
 

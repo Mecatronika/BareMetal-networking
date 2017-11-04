@@ -9,10 +9,11 @@ CFLAGS += -I ../include
 VPATH += ../include/libnet
 
 .PHONY: all
-all: libnet.a ethernet-test mac-test
+all: libnet.a crc-test ethernet-test mac-test
 
 libnet.a: \
 	buffer.o \
+	crc.o \
 	ethernet.o \
 	mac.o \
 	mutator.o \
@@ -22,6 +23,12 @@ libnet.a: \
 	$(AR) $(ARFLAGS) $@ $^
 
 buffer.o: buffer.c buffer.h
+
+crc.o: crc.c crc.h
+
+crc-test.o: crc-test.c crc.h
+
+crc-test: crc-test.o -lnet
 
 ethernet.o: ethernet.c ethernet.h mac.h
 
@@ -50,7 +57,8 @@ clean:
 	$(RM) libnet.a
 
 .PHONY: test
-test: mac-test ethernet-test
+test: crc-test mac-test ethernet-test
+	./crc-test
 	./mac-test
 	./ethernet-test
 
