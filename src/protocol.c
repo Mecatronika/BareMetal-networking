@@ -26,6 +26,16 @@ void libnet_protocol_done(struct libnet_protocol *protocol)
 		protocol->done(protocol->data);
 }
 
+void libnet_protocol_move(struct libnet_protocol *dst,
+                          struct libnet_protocol *src)
+{
+	// copy the content
+	*dst = *src;
+	// reinitialize the old structure
+	// with zeroes and null-pointers.
+	libnet_protocol_init(src);
+}
+
 int libnet_protocol_mutate(struct libnet_protocol *protocol,
                            const struct libnet_mutator *mutator)
 {

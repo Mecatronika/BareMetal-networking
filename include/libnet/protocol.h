@@ -71,6 +71,13 @@ void libnet_protocol_init(struct libnet_protocol *protocol);
 /// @brief Releases resources allocated by the protocol.
 void libnet_protocol_done(struct libnet_protocol *protocol);
 
+/// @brief Moves the contents of one protocol structure
+/// to another, erasing the old protocol.
+/// @param dst The structure to move the protocol to.
+/// @param src The structure to move the contents from.
+void libnet_protocol_move(struct libnet_protocol *dst,
+                          struct libnet_protocol *src);
+
 /// @brief Modify the protocol data.
 int libnet_protocol_mutate(struct libnet_protocol *protocol,
                            const struct libnet_mutator *mutator);
