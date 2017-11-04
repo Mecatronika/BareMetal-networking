@@ -15,6 +15,7 @@ libnet.a: \
 	buffer.o \
 	ethernet.o \
 	mac.o \
+	mutator.o \
 	pipe.o \
 	protocol.o \
 	stack.o
@@ -33,6 +34,8 @@ mac.o: mac.c mac.h
 mac-test.o: mac-test.c mac.h
 
 mac-test: mac-test.o -lnet
+
+mutator.o: mutator.c mutator.h
 
 pipe.o: pipe.c pipe.h
 
