@@ -49,6 +49,12 @@ void libnet_pipe_init(struct libnet_pipe *pipe);
 /// the pipe.
 void libnet_pipe_done(struct libnet_pipe *pipe);
 
+/// @brief Moves the pipe from one structure to
+/// another. The contents of the old structure are
+/// erased.
+void libnet_pipe_move(struct libnet_pipe *dst,
+                      struct libnet_pipe *src);
+
 /// @brief Receives data.
 int libnet_pipe_recv(struct libnet_pipe *pipe,
                      void *buf,
