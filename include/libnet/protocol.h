@@ -14,11 +14,31 @@ extern "C"
 {
 #endif
 
+/// @brief Identifies which protocol
+/// is contained by the protocol structure.
+enum libnet_protocol_id
+{
+	/// @brief The protocol is not
+	/// specified.
+	LIBNET_PROTOCOL_NONE,
+	/// @brief The protocol is ethernet.
+	LIBNET_PROTOCOL_ETHERNET,
+	/// @brief The protocol is TCP.
+	LIBNET_PROTOCOL_TCP,
+	/// @brief The protocol is IP.
+	LIBNET_PROTOCOL_IP,
+	/// $brief The protocol is HTTP.
+	LIBNET_PROTOCOL_HTTP
+};
+
 /// @brief The base structure for a protocol.
 /// It contains all the callbacks required to
 /// integrate with the network stack.
 struct libnet_protocol
 {
+	/// @brief Identifies type information
+	/// about the protocol.
+	enum libnet_protocol_id id;
 	/// @brief Protocol specific data.
 	void *data;
 };
