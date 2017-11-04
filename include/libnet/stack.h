@@ -21,6 +21,8 @@ extern "C"
 {
 #endif
 
+struct libnet_buffer;
+
 /// @brief Contains a type-safe indication
 /// of the maximum amount of protocols the stack
 /// may have.
@@ -46,6 +48,17 @@ struct libnet_stack
 /// before the stack may be used.
 void libnet_stack_init(struct libnet_stack *stack);
 
+/// @brief Called when the stack is no longer going
+/// to be used. This function releases all resources
+/// allocated by the protocols and pipe.
+void libnet_stack_done(struct libnet_stack *stack);
+
+/// @brief Pushes the ethernet protocol to the end of the stack.
+/// @returns Zero if the function is successfull, non-zero
+/// otherwise. This function will only fail if the number of
+/// protocols has already exceed @ref LIBNET_PROTOCOL_MAX.
+int libnet_stack_push_ethernet(struct libnet_stack *stack);
+
 /// @brief Pushes the IP protocol to the end of the stack.
 /// @returns Zero if the function is successful, non-zero
 /// otherwise. This function will only fail if the number of
@@ -70,6 +83,14 @@ int libnet_stack_pop(struct libnet_stack *stack);
 /// may be used.
 void libnet_stack_set_pipe(struct libnet_stack *stack,
                            struct libnet_pipe *pipe);
+
+/// @brief Attempts to read from the network.
+int libnet_stack_read(struct libnet_stack *stack,
+                      struct libnet_buffer *buffer);
+
+/// @brief Attempts to write to the network.
+int libnet_stack_write(struct libnet_stack *stack,
+                       const struct libnet_buffer *buffer);
 
 #ifdef __cplusplus
 } // extern "C"
