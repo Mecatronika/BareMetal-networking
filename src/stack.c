@@ -6,6 +6,27 @@
 
 #include <libnet/stack.h>
 
+#include <libnet/ethernet.h>
+
+#ifndef NULL
+#define NULL ((void *) 0x00)
+#endif
+
+const unsigned long long int libnet_protocol_max = LIBNET_PROTOCOL_MAX;
+
+static void ethernet_done(void *ethernet_ptr)
+{
+	(void) ethernet_ptr;
+}
+
+static int ethernet_mutate(void *ethernet_ptr,
+                           const struct libnet_mutator *mutator)
+{
+	struct libnet_ethernet *ethernet = (struct libnet_ethernet *) ethernet_ptr;
+
+	return libnet_ethernet_mutate(ethernet, mutator);
+}
+
 void libnet_stack_init(struct libnet_stack *stack)
 {
 	libnet_pipe_init(&stack->pipe);
@@ -37,4 +58,47 @@ int libnet_stack_mutate(struct libnet_stack *stack,
 	}
 
 	return 0;
+}
+
+int libnet_stack_push_ethernet(struct libnet_stack *stack,
+                               struct libnet_ethernet *ethernet)
+{
+	struct libnet_protocol protocol;
+
+	libnet_protocol_init(&protocol);
+
+	protocol.data = ethernet;
+	protocol.done = ethernet_done;
+	protocol.write = NULL; //ethernet_write;
+	protocol.read = NULL; //ethernet_read;
+	protocol.mutate = ethernet_mutate;
+
+	return libnet_stack_push_protocol(stack, &protocol);
+}
+
+int libnet_stack_push_protocol(struct libnet_stack *stack,
+                               struct libnet_protocol *protocol)
+{
+	if (stack->protocol_count >= libnet_protocol_max)
+		return -1;
+
+	libnet_protocol_move(&stack->protocol_array[stack->protocol_count], protocol);
+
+	stack->protocol_count++;
+
+	return 0;
+}
+
+int libnet_stack_read(struct libnet_stack *stack,
+                      struct libnet_buffer *buffer)
+{
+	(void) stack;
+	(void) buffer;
+	return 0;
+}
+
+void libnet_stack_set_pipe(struct libnet_stack *stack,
+                           struct libnet_pipe *pipe)
+{
+	libnet_pipe_move(&stack->pipe, pipe);
 }

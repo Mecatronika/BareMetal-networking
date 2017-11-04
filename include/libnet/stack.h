@@ -22,6 +22,7 @@ extern "C"
 #endif
 
 struct libnet_buffer;
+struct libnet_ethernet;
 
 /// @brief Contains a type-safe indication
 /// of the maximum amount of protocols the stack
@@ -57,7 +58,8 @@ void libnet_stack_done(struct libnet_stack *stack);
 /// @returns Zero if the function is successfull, non-zero
 /// otherwise. This function will only fail if the number of
 /// protocols has already exceed @ref LIBNET_PROTOCOL_MAX.
-int libnet_stack_push_ethernet(struct libnet_stack *stack);
+int libnet_stack_push_ethernet(struct libnet_stack *stack,
+                               struct libnet_ethernet *ethernet);
 
 /// @brief Pushes the IP protocol to the end of the stack.
 /// @returns Zero if the function is successful, non-zero
@@ -70,6 +72,13 @@ int libnet_stack_push_ip(struct libnet_stack *stack);
 /// otherwise. This function will only fail if the number
 /// of protocols has already exceeded @ref LIBNET_PROTOCOL_MAX.
 int libnet_stack_push_tcp(struct libnet_stack *stack);
+
+/// @brief Pushes an arbitrary protocol to the end of the stack.
+/// @returns Zero if the function is successful, non-zero otherwise.
+/// This function will only fail if the number of protocols have
+/// already exceeded @ref LIBNET_PROTOCOL_MAX.
+int libnet_stack_push_protocol(struct libnet_stack *stack,
+                               struct libnet_protocol *protocol);
 
 /// @brief Removes the protocol that was added last from
 /// the network stack.
