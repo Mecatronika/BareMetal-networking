@@ -6,6 +6,12 @@
 
 #include <libnet/ethernet.h>
 
+#include <libnet/mutator.h>
+
+#ifndef NULL
+#define NULL ((void *) 0x00)
+#endif
+
 void libnet_ethernet_init(struct libnet_ethernet *ethernet)
 {
 	ethernet->type = LIBNET_ETHERTYPE_NONE;
@@ -25,4 +31,14 @@ int libnet_ethernet_set_destination(struct libnet_ethernet *ethernet,
                                     unsigned long long int dst_size)
 {
 	return libnet_mac_parse(&ethernet->destination, dst, dst_size);
+}
+
+int libnet_ethernet_mutate(struct libnet_ethernet *ethernet,
+                           const struct libnet_mutator *mutator)
+{
+	if (mutator->mutate_ethernet == NULL)
+		// Not an ethernet mutator
+		return 0;
+
+	return mutator->mutate_ethernet(mutator->data, ethernet);
 }

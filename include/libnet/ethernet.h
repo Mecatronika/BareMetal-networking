@@ -16,6 +16,8 @@ extern "C"
 {
 #endif
 
+struct libnet_mutator;
+
 /// @brief Used to indicate which
 /// protocol is encapsulated in the
 /// payload.
@@ -55,6 +57,10 @@ int libnet_ethernet_set_source(struct libnet_ethernet *ethernet,
 int libnet_ethernet_set_destination(struct libnet_ethernet *ethernet,
                                     const char *dst,
                                     unsigned long long int dst_size);
+
+/// @brief Allow a mutator access to the ethernet parameters.
+int libnet_ethernet_mutate(struct libnet_ethernet *ethernet,
+                           const struct libnet_mutator *mutator);
 
 #ifdef __cplusplus
 } // extern "C"
