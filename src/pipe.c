@@ -14,12 +14,34 @@ void libnet_pipe_init(struct libnet_pipe *pipe)
 {
 	pipe->data = NULL;
 	pipe->done = NULL;
-	pipe->send = NULL;
 	pipe->recv = NULL;
+	pipe->send = NULL;
 }
 
 void libnet_pipe_done(struct libnet_pipe *pipe)
 {
 	if (pipe->done != NULL)
 		pipe->done(pipe->data);
+}
+
+int libnet_pipe_recv(struct libnet_pipe *pipe,
+                     void *buf,
+                     unsigned long long int buf_size,
+                     unsigned long long int *recv_size)
+{
+	if (pipe->recv == NULL)
+		return -1;
+
+	return pipe->recv(pipe->data, buf, buf_size, recv_size);
+}
+
+int libnet_pipe_send(struct libnet_pipe *pipe,
+                     const void *buf,
+                     unsigned long long int buf_size,
+                     unsigned long long int *recv_size)
+{
+	if (pipe->recv == NULL)
+		return -1;
+
+	return pipe->send(pipe->data, buf, buf_size, recv_size);
 }

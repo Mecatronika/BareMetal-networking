@@ -28,16 +28,38 @@ struct libnet_pipe
 	/// @brief Function pointer for the receive
 	/// implementation.
 	int (*recv)(void *pipe_data,
-	            struct libnet_pipe *pipe);
+	            void *buf,
+	            unsigned long long int buf_size,
+	            unsigned long long int *recv_size);
 	/// @brief Function pointer for the send
 	/// implementation.
 	int (*send)(void *pipe_data,
-	            const struct libnet_pipe *pipe);
+	            const void *buf,
+	            unsigned long long int buf_size,
+	            unsigned long long int *send_size);
 };
 
+/// @brief Initializes a pipe.
+/// The caller still must set the internal callback
+/// functions after this. This function is only for
+/// pointer safety.
 void libnet_pipe_init(struct libnet_pipe *pipe);
 
+/// @brief Releases resources allocated by
+/// the pipe.
 void libnet_pipe_done(struct libnet_pipe *pipe);
+
+/// @brief Receives data.
+int libnet_pipe_recv(struct libnet_pipe *pipe,
+                     void *buf,
+                     unsigned long long int buf_size,
+                     unsigned long long int *recv_size);
+
+/// @brief Sends data.
+int libnet_pipe_send(struct libnet_pipe *pipe,
+                     const void *buf,
+                     unsigned long long int buf_size,
+                     unsigned long long int *recv_size);
 
 #ifdef __cplusplus
 } // extern "C"
