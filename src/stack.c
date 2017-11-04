@@ -23,3 +23,18 @@ void libnet_stack_done(struct libnet_stack *stack)
 	for (unsigned long long int i = 0; i < LIBNET_PROTOCOL_MAX; i++)
 		libnet_protocol_done(&stack->protocol_array[i]);
 }
+
+int libnet_stack_mutate(struct libnet_stack *stack,
+                        const struct libnet_mutator *mutator)
+{
+	for (unsigned long long int i = 0; i < stack->protocol_count; i++)
+	{
+		struct libnet_protocol *protocol = &stack->protocol_array[i];
+
+		int err = libnet_protocol_mutate(protocol, mutator);
+		if (err != 0)
+			return err;
+	}
+
+	return 0;
+}

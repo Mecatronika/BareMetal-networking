@@ -92,6 +92,10 @@ int libnet_stack_read(struct libnet_stack *stack,
 int libnet_stack_write(struct libnet_stack *stack,
                        const struct libnet_buffer *buffer);
 
+/// @brief Modify the network stack data.
+int libnet_stack_mutate(struct libnet_stack *stack,
+                        const struct libnet_mutator *mutator);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

@@ -14,6 +14,8 @@ extern "C"
 {
 #endif
 
+struct libnet_mutator;
+
 /// @brief Identifies which protocol
 /// is contained by the protocol structure.
 enum libnet_protocol_id
@@ -56,6 +58,9 @@ struct libnet_protocol
 	             const void *buf,
 	             unsigned long long int buf_size,
 	             unsigned long long int *write_size);
+	/// @brief Modify protocol data.
+	int (*mutate)(void *protocol_data,
+	              const struct libnet_mutator *mutator);
 };
 
 /// @brief Initializes the protocol. This initializes
@@ -65,6 +70,10 @@ void libnet_protocol_init(struct libnet_protocol *protocol);
 
 /// @brief Releases resources allocated by the protocol.
 void libnet_protocol_done(struct libnet_protocol *protocol);
+
+/// @brief Modify the protocol data.
+int libnet_protocol_mutate(struct libnet_protocol *protocol,
+                           const struct libnet_mutator *mutator);
 
 #ifdef __cplusplus
 } // extern "C"
