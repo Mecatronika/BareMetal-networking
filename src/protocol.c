@@ -14,4 +14,13 @@ void libnet_protocol_init(struct libnet_protocol *protocol)
 {
 	protocol->id = LIBNET_PROTOCOL_NONE;
 	protocol->data = NULL;
+	protocol->done = NULL;
+	protocol->read = NULL;
+	protocol->write = NULL;
+}
+
+void libnet_protocol_done(struct libnet_protocol *protocol)
+{
+	if (protocol->done)
+		protocol->done(protocol->data);
 }
