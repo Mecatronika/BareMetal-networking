@@ -53,9 +53,37 @@ static int mutate_tcp(const void *mutator_data,
 
 static int export_buffer(const struct libnet_buffer *buffer)
 {
-	FILE *file = fopen("tcp-packet.bin", "wb");
+	FILE *file = fopen("tcp-packet.pcap", "wb");
 	if (file == NULL)
 		return -1;
+
+	// export PCAP global header
+
+	// magic number
+	fwrite("\xa1\xb2\xc3\xd4", 4, 1, file);
+	// version major
+	fwrite("\x00\x02", 2, 1, file);
+	// version minor
+	fwrite("\x00\x04", 2, 1, file);
+	// GMT
+	fwrite("\x00\x00\x00\x00", 4, 1, file);
+	// accuracy of timestamps
+	fwrite("\x00\x00\x00\x00", 4, 1, file);
+	// max length of captured packets
+	fwrite("\x00\x00\x00\x80", 4, 1, file);
+	// data link type
+	fwrite("\x00\x00\x00\x01", 4, 1, file);
+
+	// export PCAP packet header
+
+	// timestamp seconds
+	fwrite("\x00\x00\x00\x00", 4, 1, file);
+	// timestamp in microseconds
+	fwrite("\x00\x00\x00\x00", 4, 1, file);
+	// packet size in file (110)
+	fwrite("\x00\x00\x00\x6e", 4, 1, file);
+	// actual size of packet (110)
+	fwrite("\x00\x00\x00\x6e", 4, 1, file);
 
 	fwrite(buffer->data, 1, buffer->size, file);
 
