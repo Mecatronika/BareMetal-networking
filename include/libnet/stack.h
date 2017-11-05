@@ -97,6 +97,11 @@ int libnet_stack_push_protocol(struct libnet_stack *stack,
 /// is already empty.
 int libnet_stack_pop(struct libnet_stack *stack);
 
+/// @brief Encapsulate a buffer with headers and footers
+/// of the network stack.
+int libnet_stack_pack(struct libnet_stack *stack,
+                      struct libnet_buffer *buffer);
+
 /// @brief Assigns a pipe to the network stack. This function
 /// must be called before @ref libnet_stack_send and @ref libnet_stack_recv
 /// may be used.

@@ -87,8 +87,8 @@ int libnet_stack_push_ethernet(struct libnet_stack *stack)
 	libnet_protocol_init(&protocol);
 	protocol.data = &stack->ethernet;
 	protocol.done = NULL;
-	protocol.pack = ethernet_pack; //ethernet_write;
-	protocol.pack = NULL; //ethernet_read;
+	protocol.pack = ethernet_pack;
+	protocol.unpack = NULL;
 	protocol.mutate = ethernet_mutate;
 	return libnet_stack_push_protocol(stack, &protocol);
 }
@@ -102,6 +102,7 @@ int libnet_stack_push_ipv6(struct libnet_stack *stack)
 	protocol.data = &stack->ipv6;
 	protocol.done = NULL;
 	protocol.pack = ipv6_pack;
+	protocol.unpack = NULL;
 	protocol.mutate = ipv6_mutate;
 	return libnet_stack_push_protocol(stack, &protocol);
 }
@@ -115,6 +116,19 @@ int libnet_stack_push_protocol(struct libnet_stack *stack,
 	libnet_protocol_move(&stack->protocol_array[stack->protocol_count], protocol);
 
 	stack->protocol_count++;
+
+	return 0;
+}
+
+int libnet_stack_pack(struct libnet_stack *stack,
+                      struct libnet_buffer *buffer)
+{
+	for (size_t i = stack->protocol_count; i > 0; i--)
+	{
+		int err = libnet_protocol_pack(&stack->protocol_array[i - 1], buffer);
+		if (err != 0)
+			return err;
+	}
 
 	return 0;
 }
