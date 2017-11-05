@@ -73,8 +73,21 @@ int libnet_ethernet_pack(struct libnet_ethernet *ethernet,
 		header[i + 6] = ethernet->source.octets[i];
 	}
 
-	header[12] = (unsigned char) ((data_size & 0xff00) >> 8);
-	header[13] = (unsigned char) ((data_size & 0x00ff) >> 0);
+	if (ethernet->type == LIBNET_ETHERTYPE_IPV4)
+	{
+		header[12] = 0x08;
+		header[13] = 0x00;
+	}
+	else if (ethernet->type == LIBNET_ETHERTYPE_IPV6)
+	{
+		header[12] = 0x86;
+		header[13] = 0xdd;
+	}
+	else if (ethernet->type == LIBNET_ETHERTYPE_NONE)
+	{
+		header[12] = (unsigned char) ((data_size & 0xff00) >> 8);
+		header[13] = (unsigned char) ((data_size & 0x00ff) >> 0);
+	}
 
 	uint32_t crc = libnet_crc32(data, data_size);
 
