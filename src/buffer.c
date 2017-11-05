@@ -35,3 +35,11 @@ int libnet_buffer_shift(struct libnet_buffer *buffer,
 
 	return 0;
 }
+
+int libnet_buffer_shift_left(struct libnet_buffer *buffer,
+                             size_t shift_size)
+{
+	(void) buffer;
+	(void) shift_size;
+	return 0;
+}

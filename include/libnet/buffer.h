@@ -36,6 +36,11 @@ void libnet_buffer_init(struct libnet_buffer *buffer);
 int libnet_buffer_shift(struct libnet_buffer *buffer,
                         size_t shift_size);
 
+/// @brief Shifts the buffer left, to erase
+/// memory in the beginning of the block.
+int libnet_buffer_shift_left(struct libnet_buffer *buffer,
+                             size_t shift_size);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

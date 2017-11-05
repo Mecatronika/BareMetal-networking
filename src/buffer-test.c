@@ -35,8 +35,33 @@ static void test_shift(void)
 	assert(buffer.size == (3 + 2));
 }
 
+static void test_shift_left(void)
+{
+
+	char bufdata[8] = "\0\0\0\0\0msg";
+
+	struct libnet_buffer buffer;
+	buffer.data = bufdata;
+	buffer.size = 8;
+	buffer.reserved = 8;
+
+	// you can't shift more data than
+	// what's available in the buffer.
+	int err = libnet_buffer_shift_left(&buffer, 9);
+	assert(err != 0);
+
+	err = libnet_buffer_shift_left(&buffer, 5);
+	assert(err == 0);
+	assert(buffer.size == 3);
+	assert(buffer.reserved == 8);
+	assert(bufdata[0] == 'm');
+	assert(bufdata[1] == 's');
+	assert(bufdata[2] == 'g');
+}
+
 int main(void)
 {
 	test_shift();
+	test_shift_left();
 	return EXIT_SUCCESS;
 }
