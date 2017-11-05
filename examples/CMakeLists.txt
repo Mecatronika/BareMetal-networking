@@ -8,4 +8,4 @@ endfunction(ADD_LIBNET_EXAMPLE EXAMPLE_NAME)
 
 add_libnet_example("example1" "example1.c")
 
-add_libnet_example("ipv6-pack" "ipv6-pack.c")
+add_libnet_example("tcp-pack" "tcp-pack.c")

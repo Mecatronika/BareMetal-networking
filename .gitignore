@@ -39,7 +39,7 @@
 *.x86_64
 *.hex
 /examples/example1
-/examples/ipv6-pack
+/examples/tcp-pack
 /src/buffer-test
 /src/crc-test
 /src/mac-test
