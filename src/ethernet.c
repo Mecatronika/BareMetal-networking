@@ -14,9 +14,11 @@
 
 void libnet_ethernet_init(struct libnet_ethernet *ethernet)
 {
-	ethernet->type = LIBNET_ETHERTYPE_NONE;
 	libnet_mac_init(&ethernet->source);
 	libnet_mac_init(&ethernet->destination);
+	ethernet->type = LIBNET_ETHERTYPE_NONE;
+	ethernet->length = 0;
+	ethernet->checksum = 0;
 }
 
 int libnet_ethernet_set_source(struct libnet_ethernet *ethernet,

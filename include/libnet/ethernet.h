@@ -44,6 +44,13 @@ struct libnet_ethernet
 	/// @brief Indicates what protocol,
 	/// if any, is in the payload.
 	enum libnet_ethertype type;
+	/// @brief If @ref LIBNET_ETHERNET_NONE
+	/// is set, then this field will indicate
+	/// the length of the payload.
+	unsigned int length;
+	/// @brief The CRC32 checksum of the
+	/// header and payload.
+	unsigned long int checksum;
 };
 
 /// @brief Initializes the ethernet protocol.
