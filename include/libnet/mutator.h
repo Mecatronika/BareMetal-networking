@@ -15,6 +15,7 @@ extern "C"
 #endif
 
 struct libnet_ethernet;
+struct libnet_ipv6;
 
 /// @brief Used for modifying protocol
 /// parameters.
@@ -24,6 +25,8 @@ struct libnet_mutator
 	const void *data;
 	/// @brief Mutate ethernet data.
 	int (*mutate_ethernet)(const void *data, struct libnet_ethernet *ethernet);
+	/// @brief Mutate IPv6 data.
+	int (*mutate_ipv6)(const void *data, struct libnet_ipv6 *ipv6);
 };
 
 /// @brief Initalizes the mutator structure.
