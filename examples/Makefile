@@ -5,7 +5,11 @@ CFLAGS += -Wall -Wextra -Werror -Wfatal-errors -std=c99
 CFLAGS += -I ../include
 
 .PHONY: all
-all: example1
+all: example1 ipv6-pack
+
+ipv6-pack.o: ipv6-pack.c stack.h
+
+ipv6-pack: ipv6-pack.o -lnet
 
 example1.o: example1.c stack.h
 
