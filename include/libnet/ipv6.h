@@ -16,6 +16,20 @@ extern "C"
 {
 #endif
 
+struct libnet_buffer;
+struct libnet_mutator;
+
+/// @brief Indicates the data protocol of
+/// the content following the IPv6 header.
+enum libnet_ipv6_protocol
+{
+	/// @brief Transmission Control Protocol.
+	/// This is the default.
+	LIBNET_IPV6_PROTOCOL_TCP,
+	/// @brief User Datagram Protocol.
+	LIBNET_IPV6_PROTOCOL_UDP
+};
+
 struct libnet_ipv6_address
 {
 	unsigned char octets[16];
@@ -26,9 +40,20 @@ void libnet_ipv6_address_init(struct libnet_ipv6_address *address);
 int libnet_ipv6_address_parse(struct libnet_ipv6_address *address,
                               const char *str, size_t str_size);
 
+/// @brief The IPv6 protocol.
 struct libnet_ipv6
 {
+	/// @brief The number of times this packet
+	/// may be forwarded until it's discarded.
+	/// This value cannot exceed 255, and is set
+	/// to 255 by default.
+	size_t hop_limit;
+	/// @brief Indicates the protocol following
+	/// the IPv6 header.
+	enum libnet_ipv6_protocol protocol;
+	/// @brief The source address.
 	struct libnet_ipv6_address source;
+	/// @brief The destination address.
 	struct libnet_ipv6_address destination;
 };
 
@@ -39,6 +64,9 @@ int libnet_ipv6_set_source(struct libnet_ipv6 *ipv6,
 
 int libnet_ipv6_set_destination(struct libnet_ipv6 *ipv6,
                                 const char *dst, size_t dst_size);
+
+int libnet_ipv6_pack(struct libnet_ipv6 *ipv6,
+                     struct libnet_buffer *buffer);
 
 #ifdef __cplusplus
 } // extern "C"

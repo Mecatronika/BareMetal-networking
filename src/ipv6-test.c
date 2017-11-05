@@ -6,8 +6,11 @@
 
 #include <libnet/ipv6.h>
 
+#include <libnet/buffer.h>
+
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
 static void test_address_parse(void)
 {
@@ -48,8 +51,47 @@ static void test_address_parse(void)
 
 }
 
+static void test_pack(void)
+{
+	struct libnet_ipv6 ipv6;
+	libnet_ipv6_init(&ipv6);
+
+	int err = libnet_ipv6_set_source(&ipv6, "0011:2233:4455:6677:8899:aabb:ccdd:eeff", 39);
+	assert(err == 0);
+
+	err = libnet_ipv6_set_destination(&ipv6, "ff00:ee11:dd22:cc33:bb44:aa55:9966:8877", 39);
+	assert(err == 0);
+
+	unsigned char bufdata[128];
+	memset(bufdata, 0, sizeof(bufdata));
+	strcpy((char *) bufdata, "msg");
+
+	struct libnet_buffer buffer;
+	libnet_buffer_init(&buffer);
+	buffer.data = bufdata;
+	buffer.size = 4;
+	buffer.reserved = sizeof(bufdata);
+
+	err = libnet_ipv6_pack(&ipv6, &buffer);
+	assert(err == 0);
+	// check for IP version 6
+	assert((bufdata[0] & 0xf0) == 0x60);
+	// check for data length
+	assert(bufdata[4] == 0x00);
+	assert(bufdata[5] == 0x04);
+	// check for TCP number
+	assert(bufdata[6] == 0x06);
+	// check HOP limit
+	assert(bufdata[7] == 0xff);
+	// check source address
+	assert(memcmp(&bufdata[8], "\x00\x11\x22\x33\x44\x55\x66\x77\x88\x99\xaa\xbb\xcc\xdd\xee\xff", 16) == 0);
+	// check destination address
+	assert(memcmp(&bufdata[8 + 16], "\xff\x00\xee\x11\xdd\x22\xcc\x33\xbb\x44\xaa\x55\x99\x66\x88\x77", 16) == 0);
+}
+
 int main(void)
 {
 	test_address_parse();
+	test_pack();
 	return EXIT_SUCCESS;
 }
