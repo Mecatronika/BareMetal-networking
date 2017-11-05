@@ -68,6 +68,9 @@ int libnet_ipv6_set_destination(struct libnet_ipv6 *ipv6,
 int libnet_ipv6_pack(struct libnet_ipv6 *ipv6,
                      struct libnet_buffer *buffer);
 
+int libnet_ipv6_unpack(struct libnet_ipv6 *ipv6,
+                       struct libnet_buffer *buffer);
+
 int libnet_ipv6_mutate(struct libnet_ipv6 *ipv6,
                        const struct libnet_mutator *mutator);
 
