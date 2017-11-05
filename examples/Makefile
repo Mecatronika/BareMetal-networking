@@ -17,6 +17,8 @@ example1: example1.o -lnet
 
 .PHONY: clean
 clean:
+	$(RM) ipv6-pack ipv6-pack.o
+	$(RM) example1 example1.o
 
 .PHONY: test
 test:
