@@ -33,6 +33,5 @@ static void test_port_parsing(void)
 int main(void)
 {
 	test_port_parsing();
-	return EXIT_FAILURE;
+	return EXIT_SUCCESS;
 }
-
