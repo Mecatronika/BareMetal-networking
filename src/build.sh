@@ -29,6 +29,7 @@ $AR $ARFLAGS libnet.a \
 	protocol.o \
 	stack.o
 
+$CC $CFLAGS buffer-test.c -o buffer-test libnet.a
 $CC $CFLAGS crc-test.c -o crc-test libnet.a
 $CC $CFLAGS mac-test.c -o mac-test libnet.a
 $CC $CFLAGS ethernet-test.c -o ethernet-test libnet.a
