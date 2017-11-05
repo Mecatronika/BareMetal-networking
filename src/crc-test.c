@@ -12,7 +12,7 @@
 static void test_crc32(void)
 {
 	char buf[] = "123456789";
-	unsigned long int crc32 = libnet_crc32(buf, sizeof(buf));
+	unsigned long int crc32 = libnet_crc32(buf, sizeof(buf) - 1);
 	assert(crc32 == 0xCBF43926UL);
 }
 

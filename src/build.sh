@@ -7,6 +7,7 @@ CFLAGS="${CFLAGS} -I../include"
 
 $CC $CFLAGS -c buffer.c -o buffer.o
 $CC $CFLAGS -c crc.c -o crc.o
+$CC $CFLAGS -c crc32.c -o crc32.o
 $CC $CFLAGS -c ethernet.c -o ethernet.o
 $CC $CFLAGS -c mac.c -o mac.o
 $CC $CFLAGS -c mutator.c -o mutator.o
@@ -20,6 +21,7 @@ ARFLAGS=rcs
 $AR $ARFLAGS libnet.a \
 	buffer.o \
 	crc.o \
+	crc32.o \
 	ethernet.o \
 	mac.o \
 	mutator.o \

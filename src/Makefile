@@ -14,6 +14,7 @@ all: libnet.a crc-test ethernet-test mac-test
 libnet.a: \
 	buffer.o \
 	crc.o \
+	crc32.o \
 	ethernet.o \
 	mac.o \
 	mutator.o \
@@ -29,6 +30,8 @@ crc.o: crc.c crc.h
 crc-test.o: crc-test.c crc.h
 
 crc-test: crc-test.o -lnet
+
+crc32.o: crc32.c
 
 ethernet.o: ethernet.c ethernet.h mac.h
 

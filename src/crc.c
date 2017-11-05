@@ -6,10 +6,11 @@
 
 #include <libnet/crc.h>
 
-unsigned long int libnet_crc32(const void *buf,
-                               unsigned long long int buf_size)
+uint32_t crc32(const void *buf,
+               size_t buf_size);
+
+uint32_t libnet_crc32(const void *buf,
+                      size_t buf_size)
 {
-	(void) buf;
-	(void) buf_size;
-	return 0;
+	return crc32(buf, buf_size);
 }
