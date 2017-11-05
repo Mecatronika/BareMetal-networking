@@ -8,21 +8,22 @@ CFLAGS += -I ../include
 
 VPATH += ../include/libnet
 
+libfiles += buffer.o
+libfiles += crc.o
+libfiles += crc32.o
+libfiles += ethernet.o
+libfiles += ipv6.o
+libfiles += mac.o
+libfiles += mutator.o
+libfiles += pipe.o
+libfiles += protocol.o
+libfiles += stack.o
+libfiles += tcp.o
+
 .PHONY: all
 all: libnet.a buffer-test crc-test ethernet-test ipv6-test mac-test
 
-libnet.a: \
-	buffer.o \
-	crc.o \
-	crc32.o \
-	ethernet.o \
-	ipv6.o \
-	mac.o \
-	mutator.o \
-	pipe.o \
-	protocol.o \
-	stack.o \
-	tcp.o
+libnet.a: $(libfiles)
 	$(AR) $(ARFLAGS) $@ $^
 
 buffer.o: buffer.c buffer.h
@@ -69,7 +70,7 @@ tcp.o: tcp.c tcp.h
 
 .PHONY: clean
 clean:
-	$(RM) buffer.o ethernet.o mac.o pipe.o protocol.o stack.o tcp.o
+	$(RM) $(libfiles)
 	$(RM) buffer-test buffer-test.o crc-test crc-test.o ethernet-test ethernet-test.o mac-test.o mac-test ipv6-test.o ipv6-test
 	$(RM) libnet.a
 
