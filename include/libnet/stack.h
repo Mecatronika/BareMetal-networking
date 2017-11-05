@@ -9,6 +9,9 @@
 #ifndef LIBNET_STACK_H
 #define LIBNET_STACK_H
 
+#include <libnet/ethernet.h>
+#include <libnet/ipv6.h>
+
 #include <libnet/pipe.h>
 #include <libnet/protocol.h>
 
@@ -41,6 +44,14 @@ struct libnet_stack
 	/// @brief The number of protocols in the
 	/// nework stack.
 	unsigned long long int protocol_count;
+	/// @brief Ethernet protocol. This member
+	/// is used if @ref libnet_stack_push_ethernet
+	/// is called.
+	struct libnet_ethernet ethernet;
+	/// @brief IPv6 protocol. This member is
+	/// used if @ref libnet_stack_push_ipv6 is
+	/// called.
+	struct libnet_ipv6 ipv6;
 };
 
 /// @brief Initializes the network stack.
@@ -58,14 +69,13 @@ void libnet_stack_done(struct libnet_stack *stack);
 /// @returns Zero if the function is successfull, non-zero
 /// otherwise. This function will only fail if the number of
 /// protocols has already exceed @ref LIBNET_PROTOCOL_MAX.
-int libnet_stack_push_ethernet(struct libnet_stack *stack,
-                               struct libnet_ethernet *ethernet);
+int libnet_stack_push_ethernet(struct libnet_stack *stack);
 
 /// @brief Pushes the IP protocol to the end of the stack.
 /// @returns Zero if the function is successful, non-zero
 /// otherwise. This function will only fail if the number of
 /// protocols has already exceeded @ref LIBNET_PROTOCOL_MAX.
-int libnet_stack_push_ip(struct libnet_stack *stack);
+int libnet_stack_push_ipv6(struct libnet_stack *stack);
 
 /// @brief Pushes the TCP protocol to the end of the stack.
 /// @returns Zero if the function is successful, non-zero

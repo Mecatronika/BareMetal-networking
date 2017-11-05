@@ -14,9 +14,12 @@
 
 const unsigned long long int libnet_protocol_max = LIBNET_PROTOCOL_MAX;
 
-static void ethernet_done(void *ethernet_ptr)
+static int ethernet_pack(void *ethernet_ptr,
+                         struct libnet_buffer *buffer)
 {
-	(void) ethernet_ptr;
+	struct libnet_ethernet *ethernet = (struct libnet_ethernet *) ethernet_ptr;
+
+	return libnet_ethernet_pack(ethernet, buffer);
 }
 
 static int ethernet_mutate(void *ethernet_ptr,
@@ -25,6 +28,22 @@ static int ethernet_mutate(void *ethernet_ptr,
 	struct libnet_ethernet *ethernet = (struct libnet_ethernet *) ethernet_ptr;
 
 	return libnet_ethernet_mutate(ethernet, mutator);
+}
+
+static int ipv6_pack(void *ipv6_ptr,
+                     struct libnet_buffer *buffer)
+{
+	struct libnet_ipv6 *ipv6 = (struct libnet_ipv6 *) ipv6_ptr;
+
+	return libnet_ipv6_pack(ipv6, buffer);
+}
+
+static int ipv6_mutate(void *ipv6_ptr,
+                       const struct libnet_mutator *mutator)
+{
+	struct libnet_ipv6 *ipv6 = (struct libnet_ipv6 *) ipv6_ptr;
+
+	return libnet_ipv6_mutate(ipv6, mutator);
 }
 
 void libnet_stack_init(struct libnet_stack *stack)
@@ -60,19 +79,30 @@ int libnet_stack_mutate(struct libnet_stack *stack,
 	return 0;
 }
 
-int libnet_stack_push_ethernet(struct libnet_stack *stack,
-                               struct libnet_ethernet *ethernet)
+int libnet_stack_push_ethernet(struct libnet_stack *stack)
 {
+	libnet_ethernet_init(&stack->ethernet);
+
 	struct libnet_protocol protocol;
-
 	libnet_protocol_init(&protocol);
-
-	protocol.data = ethernet;
-	protocol.done = ethernet_done;
-	protocol.write = NULL; //ethernet_write;
-	protocol.read = NULL; //ethernet_read;
+	protocol.data = &stack->ethernet;
+	protocol.done = NULL;
+	protocol.pack = ethernet_pack; //ethernet_write;
+	protocol.pack = NULL; //ethernet_read;
 	protocol.mutate = ethernet_mutate;
+	return libnet_stack_push_protocol(stack, &protocol);
+}
 
+int libnet_stack_push_ipv6(struct libnet_stack *stack)
+{
+	libnet_ipv6_init(&stack->ipv6);
+
+	struct libnet_protocol protocol;
+	libnet_protocol_init(&protocol);
+	protocol.data = &stack->ipv6;
+	protocol.done = NULL;
+	protocol.pack = ipv6_pack;
+	protocol.mutate = ipv6_mutate;
 	return libnet_stack_push_protocol(stack, &protocol);
 }
 
