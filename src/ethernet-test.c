@@ -91,7 +91,7 @@ static void test_unpack(void)
 	bufdata[11] = 0x21;
 	// set length to two
 	bufdata[12] = 0x00;
-	bufdata[13] = 0x02;
+	bufdata[13] = 0x04;
 	// set payload
 	bufdata[14] = 't';
 	bufdata[15] = 'e';
@@ -113,6 +113,11 @@ static void test_unpack(void)
 	assert(err == 0);
 	assert(memcmp(ethernet.destination.octets, "\x23\x32\x23\x32\x23\x32", 6) == 0);
 	assert(memcmp(ethernet.source.octets, "\x12\x21\x12\x21\x12\x21", 6) == 0);
+	assert(ethernet.type == LIBNET_ETHERTYPE_NONE);
+	assert(ethernet.length == 4);
+	// TODO : assert(ethernet.checksum == 0);
+	assert(memcmp(buffer.data, "test", 4) == 0);
+	assert(buffer.size == 4);
 }
 
 int main(void)
