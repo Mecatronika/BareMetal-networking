@@ -19,15 +19,10 @@ static int mutate_ethernet(const void *mutator_data,
 
 	ethernet->type = LIBNET_ETHERTYPE_IPV6;
 
-	int err = libnet_ethernet_set_source(ethernet, "00:11:22:33:44:55", 17);
-	if (err != 0)
-		return err;
-
-	err = libnet_ethernet_set_destination(ethernet, "33:44:55:66:77:88", 17);
-	if (err != 0)
-		return err;
-
-	return 0;
+	int err = 0;
+	err |= libnet_ethernet_set_source(ethernet, "00:11:22:33:44:55", 17);
+	err |= libnet_ethernet_set_destination(ethernet, "33:44:55:66:77:88", 17);
+	return err;
 }
 
 const char ipv6_source[] = "2001:0000:3238:DFE1:0063:0000:0000:FEFB";
@@ -39,20 +34,26 @@ static int mutate_ipv6(const void *mutator_data,
 {
 	(void) mutator_data;
 
-	int err = libnet_ipv6_set_source(ipv6, ipv6_source, sizeof(ipv6_source) - 1);
-	if (err != 0)
-		return err;
+	int err = 0;
+	err |= libnet_ipv6_set_source(ipv6, ipv6_source, sizeof(ipv6_source) - 1);
+	err |= libnet_ipv6_set_destination(ipv6, ipv6_destination, sizeof(ipv6_destination) - 1);
+	return err;
+}
 
-	err = libnet_ipv6_set_destination(ipv6, ipv6_destination, sizeof(ipv6_destination) - 1);
-	if (err != 0)
-		return err;
+static int mutate_tcp(const void *mutator_data,
+                      struct libnet_tcp *tcp)
+{
+	(void) mutator_data;
 
-	return 0;
+	int err = 0;
+	err |= libnet_tcp_set_source(tcp, "20", 2);
+	err |= libnet_tcp_set_destination(tcp, "80", 2);
+	return err;
 }
 
 static int export_buffer(const struct libnet_buffer *buffer)
 {
-	FILE *file = fopen("ipv6-pack.bin", "wb");
+	FILE *file = fopen("tcp-packet.bin", "wb");
 	if (file == NULL)
 		return -1;
 
@@ -69,18 +70,13 @@ int main(void)
 
 	libnet_stack_init(&stack);
 
-	int err = libnet_stack_push_ethernet(&stack);
+	int err = 0;
+	err |= libnet_stack_push_ethernet(&stack);
+	err |= libnet_stack_push_ipv6(&stack);
+	err |= libnet_stack_push_tcp(&stack);
 	if (err != 0)
 	{
-		fprintf(stderr, "Failed to push ethernet protocol to network stack.\n");
-		libnet_stack_done(&stack);
-		return EXIT_FAILURE;
-	}
-
-	err = libnet_stack_push_ipv6(&stack);
-	if (err != 0)
-	{
-		fprintf(stderr, "Failed to push IPv6 protocol to network stack.\n");
+		fprintf(stderr, "Failed to construct network stack.\n");
 		libnet_stack_done(&stack);
 		return EXIT_FAILURE;
 	}
@@ -89,6 +85,7 @@ int main(void)
 	libnet_mutator_init(&mutator);
 	mutator.mutate_ethernet = mutate_ethernet;
 	mutator.mutate_ipv6 = mutate_ipv6;
+	mutator.mutate_tcp = mutate_tcp;
 
 	err = libnet_stack_mutate(&stack, &mutator);
 	if (err != 0)
@@ -104,7 +101,7 @@ int main(void)
 
 	struct libnet_buffer buffer;
 	buffer.data = msgbuf;
-	buffer.size = 64;
+	buffer.size = 32;
 	buffer.reserved = sizeof(msgbuf);
 
 	err = libnet_stack_pack(&stack, &buffer);
