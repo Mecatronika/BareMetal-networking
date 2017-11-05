@@ -35,6 +35,7 @@
 *.i*86
 *.x86_64
 *.hex
+/examples/example1
 /src/buffer-test
 /src/crc-test
 /src/mac-test
