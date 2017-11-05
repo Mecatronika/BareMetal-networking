@@ -29,9 +29,9 @@ enum libnet_ethertype
 	/// @brief The protocol is ARP.
 	LIBNET_ETHERTYPE_ARP,
 	/// @brief The protocol is IPv4.
-	LIBNET_ETHERTYPE_IPv4,
+	LIBNET_ETHERTYPE_IPV4,
 	/// @brief The protocol is IPv6.
-	LIBNET_ETHERTYPE_IPv6
+	LIBNET_ETHERTYPE_IPV6
 };
 
 /// @brief Ethernet protocol variables.
