@@ -7,6 +7,7 @@
 #include <libnet/ipv6.h>
 
 #include <libnet/buffer.h>
+#include <libnet/mutator.h>
 
 void libnet_ipv6_address_init(struct libnet_ipv6_address *address)
 {
@@ -115,4 +116,13 @@ int libnet_ipv6_pack(struct libnet_ipv6 *ipv6,
 	}
 
 	return 0;
+}
+
+int libnet_ipv6_mutate(struct libnet_ipv6 *ipv6,
+                       const struct libnet_mutator *mutator)
+{
+	if (mutator->mutate_ipv6 == NULL)
+		return 0;
+
+	return mutator->mutate_ipv6(mutator->data, ipv6);
 }
