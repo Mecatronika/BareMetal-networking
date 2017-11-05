@@ -5,6 +5,7 @@ set -e
 CC=gcc
 CFLAGS="${CFLAGS} -I../include"
 
+$CC $CFLAGS -c accessor.c -o accessor.o
 $CC $CFLAGS -c buffer.c -o buffer.o
 $CC $CFLAGS -c crc.c -o crc.o
 $CC $CFLAGS -c crc32.c -o crc32.o

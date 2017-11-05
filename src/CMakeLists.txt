@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.0.2)
 
 add_library("net"
+	"accessor.c"
 	"buffer.c"
 	"crc.c"
 	"crc32.c"

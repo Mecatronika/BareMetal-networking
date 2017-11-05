@@ -1,5 +1,6 @@
 #!/bin/sh
 
+rm -f accessor.o
 rm -f buffer.o
 rm -f crc.o
 rm -f crc32.o

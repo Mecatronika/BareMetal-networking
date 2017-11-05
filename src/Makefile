@@ -8,6 +8,7 @@ CFLAGS += -I ../include
 
 VPATH += ../include/libnet
 
+libfiles += accessor.o
 libfiles += buffer.o
 libfiles += crc.o
 libfiles += crc32.o
