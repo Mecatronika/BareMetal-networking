@@ -6,6 +6,8 @@
 
 #include <libnet/tcp.h>
 
+#include <libnet/buffer.h>
+
 #include <limits.h>
 
 static int parse_port(unsigned int *port_ptr,
@@ -74,4 +76,12 @@ int libnet_tcp_set_destination(struct libnet_tcp *tcp,
                                size_t str_size)
 {
 	return parse_port(&tcp->destination, str, str_size);
+}
+
+int libnet_tcp_pack(struct libnet_tcp *tcp,
+                    struct libnet_buffer *buffer)
+{
+	(void) tcp;
+	(void) buffer;
+	return -1;
 }
