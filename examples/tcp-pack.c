@@ -46,7 +46,7 @@ static int mutate_tcp(const void *mutator_data,
 	(void) mutator_data;
 
 	int err = 0;
-	err |= libnet_tcp_set_source(tcp, "20", 2);
+	err |= libnet_tcp_set_source(tcp, "80", 2);
 	err |= libnet_tcp_set_destination(tcp, "80", 2);
 	return err;
 }
@@ -80,10 +80,10 @@ static int export_buffer(const struct libnet_buffer *buffer)
 	fwrite("\x00\x00\x00\x00", 4, 1, file);
 	// timestamp in microseconds
 	fwrite("\x00\x00\x00\x00", 4, 1, file);
-	// packet size in file (110)
-	fwrite("\x00\x00\x00\x6e", 4, 1, file);
-	// actual size of packet (110)
-	fwrite("\x00\x00\x00\x6e", 4, 1, file);
+	// packet size in file (267)
+	fwrite("\x00\x00\x01\x0b", 4, 1, file);
+	// actual size of packet (267)
+	fwrite("\x00\x00\x01\x0b", 4, 1, file);
 
 	fwrite(buffer->data, 1, buffer->size, file);
 
@@ -91,6 +91,14 @@ static int export_buffer(const struct libnet_buffer *buffer)
 
 	return 0;
 }
+
+const char http_response[] = "HTTP/1.1 200 OK\n"
+                             "Date: Mon, 27 Jul 2009 12:28:53 GMT\n"
+                             "Server: Apache/2.2.14 (Win32)\n"
+                             "Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT\n"
+                             "Content-Length: 0\n"
+                             "Content-Type: text/html\n"
+                             "Connection: Closed\n";
 
 int main(void)
 {
@@ -123,13 +131,13 @@ int main(void)
 		return EXIT_FAILURE;
 	}
 
-	char msgbuf[128];
+	char msgbuf[512];
 	memset(msgbuf, 0, sizeof(msgbuf));
-	strcat(msgbuf, "Hello, world!");
+	strcat(msgbuf, http_response);
 
 	struct libnet_buffer buffer;
 	buffer.data = msgbuf;
-	buffer.size = 32;
+	buffer.size = sizeof(http_response);
 	buffer.reserved = sizeof(msgbuf);
 
 	err = libnet_stack_pack(&stack, &buffer);
