@@ -118,6 +118,14 @@ int libnet_ipv6_pack(struct libnet_ipv6 *ipv6,
 	return 0;
 }
 
+int libnet_ipv6_unpack(struct libnet_ipv6 *ipv6,
+                       struct libnet_buffer *buffer)
+{
+	(void) ipv6;
+	(void) buffer;
+	return -1;
+}
+
 int libnet_ipv6_mutate(struct libnet_ipv6 *ipv6,
                        const struct libnet_mutator *mutator)
 {
