@@ -7,6 +7,7 @@
 #include <libnet/tcp.h>
 
 #include <libnet/buffer.h>
+#include <libnet/mutator.h>
 
 #include <limits.h>
 
@@ -76,6 +77,15 @@ int libnet_tcp_set_destination(struct libnet_tcp *tcp,
                                size_t str_size)
 {
 	return parse_port(&tcp->destination, str, str_size);
+}
+
+int libnet_tcp_mutate(struct libnet_tcp *tcp,
+                      const struct libnet_mutator *mutator)
+{
+	if (mutator->mutate_tcp == NULL)
+		return 0;
+
+	return mutator->mutate_tcp(mutator->data, tcp);
 }
 
 int libnet_tcp_pack(struct libnet_tcp *tcp,

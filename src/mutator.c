@@ -14,4 +14,6 @@ void libnet_mutator_init(struct libnet_mutator *mutator)
 {
 	mutator->data = NULL;
 	mutator->mutate_ethernet = NULL;
+	mutator->mutate_ipv6 = NULL;
+	mutator->mutate_tcp = NULL;
 }

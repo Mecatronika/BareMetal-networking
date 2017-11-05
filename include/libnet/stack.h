@@ -11,6 +11,7 @@
 
 #include <libnet/ethernet.h>
 #include <libnet/ipv6.h>
+#include <libnet/tcp.h>
 
 #include <libnet/pipe.h>
 #include <libnet/protocol.h>
@@ -52,6 +53,10 @@ struct libnet_stack
 	/// used if @ref libnet_stack_push_ipv6 is
 	/// called.
 	struct libnet_ipv6 ipv6;
+	/// @brief TCP protocol. This member is
+	/// used if @ref libnet_stack_push_tcp is
+	/// called.
+	struct libnet_tcp tcp;
 };
 
 /// @brief Initializes the network stack.

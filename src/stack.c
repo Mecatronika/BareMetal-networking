@@ -46,6 +46,22 @@ static int ipv6_mutate(void *ipv6_ptr,
 	return libnet_ipv6_mutate(ipv6, mutator);
 }
 
+static int tcp_pack(void *tcp_ptr,
+                     struct libnet_buffer *buffer)
+{
+	struct libnet_tcp *tcp = (struct libnet_tcp *) tcp_ptr;
+
+	return libnet_tcp_pack(tcp, buffer);
+}
+
+static int tcp_mutate(void *tcp_ptr,
+                       const struct libnet_mutator *mutator)
+{
+	struct libnet_tcp *tcp = (struct libnet_tcp *) tcp_ptr;
+
+	return libnet_tcp_mutate(tcp, mutator);
+}
+
 void libnet_stack_init(struct libnet_stack *stack)
 {
 	libnet_pipe_init(&stack->pipe);
@@ -104,6 +120,20 @@ int libnet_stack_push_ipv6(struct libnet_stack *stack)
 	protocol.pack = ipv6_pack;
 	protocol.unpack = NULL;
 	protocol.mutate = ipv6_mutate;
+	return libnet_stack_push_protocol(stack, &protocol);
+}
+
+int libnet_stack_push_tcp(struct libnet_stack *stack)
+{
+	libnet_tcp_init(&stack->tcp);
+
+	struct libnet_protocol protocol;
+	libnet_protocol_init(&protocol);
+	protocol.data = &stack->tcp;
+	protocol.done = NULL;
+	protocol.pack = tcp_pack;
+	protocol.unpack = NULL;
+	protocol.mutate = tcp_mutate;
 	return libnet_stack_push_protocol(stack, &protocol);
 }
 
