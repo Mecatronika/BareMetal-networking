@@ -31,7 +31,10 @@ enum libnet_ethertype
 	/// @brief The protocol is IPv4.
 	LIBNET_ETHERTYPE_IPV4,
 	/// @brief The protocol is IPv6.
-	LIBNET_ETHERTYPE_IPV6
+	LIBNET_ETHERTYPE_IPV6,
+	/// @brief The protocol is unknown
+	/// or not supported.
+	LIBNET_ETHERTYPE_UNKNOWN
 };
 
 /// @brief Ethernet protocol variables.
