@@ -77,7 +77,7 @@ tcp.o: tcp.c tcp.h
 .PHONY: clean
 clean:
 	$(RM) $(libfiles)
-	$(RM) $(tests)
+	$(RM) $(tests) $(tests:=.o)
 	$(RM) libnet.a
 
 .PHONY: test
