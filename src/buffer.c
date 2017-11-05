@@ -39,7 +39,20 @@ int libnet_buffer_shift(struct libnet_buffer *buffer,
 int libnet_buffer_shift_left(struct libnet_buffer *buffer,
                              size_t shift_size)
 {
-	(void) buffer;
-	(void) shift_size;
+	if (buffer->size < shift_size)
+		return -1;
+
+	unsigned char *dst = (unsigned char *) buffer->data;
+	unsigned char *src = &dst[shift_size];
+
+	size_t buffer_size = 0;
+	buffer_size += buffer->size;
+	buffer_size -= shift_size;
+
+	for (size_t i = 0; i < buffer_size; i++)
+		dst[i] = src[i];
+
+	buffer->size -= shift_size;
+
 	return 0;
 }
