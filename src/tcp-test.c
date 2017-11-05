@@ -43,14 +43,14 @@ static void test_pack(void)
 	err = libnet_tcp_set_destination(&tcp, "513", 3);
 	assert(err == 0);
 
-	char bufdata[128];
+	unsigned char bufdata[128];
 	memset(bufdata, 0, sizeof(bufdata));
-	strcat(bufdata, "Hello, TCP!");
+	strcat((char *) bufdata, "Hello, TCP!");
 
 	struct libnet_buffer buffer;
 	libnet_buffer_init(&buffer);
 	buffer.data = bufdata;
-	buffer.size = strlen(bufdata);
+	buffer.size = strlen((char *) bufdata);
 	buffer.reserved = sizeof(bufdata);
 
 	tcp.sequence = 0x01020304;
@@ -72,7 +72,7 @@ static void test_pack(void)
 	assert(bufdata[5] == 0x02);
 	assert(bufdata[6] == 0x03);
 	assert(bufdata[7] == 0x04);
-	// check check acknowledgment
+	// check acknowledgment
 	assert(bufdata[8] == 0xa0);
 	assert(bufdata[9] == 0xb0);
 	assert(bufdata[10] == 0xc0);
@@ -91,8 +91,10 @@ static void test_pack(void)
 	// check urgent pointer
 	assert(bufdata[18] == 0x77);
 	assert(bufdata[19] == 0x88);
+	// check new buffer size
+	assert(buffer.size == (strlen((char *) &bufdata[20]) + 20));
 	// check data
-	assert(strcmp(&bufdata[20], "Hello, TCP!") == 0);
+	assert(strcmp((char *) &bufdata[20], "Hello, TCP!") == 0);
 }
 
 int main(void)
