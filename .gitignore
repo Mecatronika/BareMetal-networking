@@ -42,6 +42,7 @@
 /src/mac-test
 /src/ethernet-test
 /src/ipv6-test
+/src/tcp-test
 
 # Debug files
 *.dSYM/

@@ -18,3 +18,23 @@ void libnet_tcp_init(struct libnet_tcp *tcp)
 	tcp->checksum = 0;
 	tcp->urgent_pointer = 0;
 }
+
+int libnet_tcp_set_source(struct libnet_tcp *tcp,
+                          const char *str,
+                          size_t str_size)
+{
+	(void) tcp;
+	(void) str;
+	(void) str_size;
+	return -1;
+}
+
+int libnet_tcp_set_destination(struct libnet_tcp *tcp,
+                               const char *str,
+                               size_t str_size)
+{
+	(void) tcp;
+	(void) str;
+	(void) str_size;
+	return -1;
+}

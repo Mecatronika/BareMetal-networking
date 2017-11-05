@@ -25,6 +25,7 @@ tests += crc-test
 tests += ethernet-test
 tests += ipv6-test
 tests += mac-test
+tests += tcp-test
 
 .PHONY: all
 all: libnet.a $(tests)
@@ -74,6 +75,10 @@ stack.o: stack.c stack.h protocol.h pipe.h
 
 tcp.o: tcp.c tcp.h
 
+tcp-test.o: tcp-test.c tcp.h
+
+tcp-test: tcp-test.o -lnet
+
 .PHONY: clean
 clean:
 	$(RM) $(libfiles)
@@ -87,6 +92,7 @@ test: buffer-test crc-test mac-test ethernet-test ipv6-test
 	./mac-test
 	./ethernet-test
 	./ipv6-test
+	./tcp-test
 
 .PHONY: install
 install:
