@@ -23,10 +23,12 @@ static void test_pack(void)
 	assert(err == 0);
 
 	// Setup the buffer
-	unsigned char bufdata[32] = "msg";
+	unsigned char bufdata[128];
+	memset(bufdata, 0, sizeof(bufdata));
+	strcpy((char *) bufdata, "msg");
 	struct libnet_buffer buffer;
 	buffer.data = bufdata;
-	buffer.size = 4;
+	buffer.size = 64;
 	buffer.reserved = sizeof(bufdata);
 
 	err = libnet_ethernet_pack(&ethernet, &buffer);
@@ -47,7 +49,7 @@ static void test_pack(void)
 	assert(bufdata[11] == 0xbc);
 	// check ethertype (in this case, payload size)
 	assert(bufdata[12] == 0x00);
-	assert(bufdata[13] == 0x04);
+	assert(bufdata[13] == 0x40);
 	// check payload
 	assert(bufdata[14] == 'm');
 	assert(bufdata[15] == 's');
