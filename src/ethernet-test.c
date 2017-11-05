@@ -33,6 +33,12 @@ static void test_pack(void)
 
 	err = libnet_ethernet_pack(&ethernet, &buffer);
 	assert(err == 0);
+	// check buffer size is set correctly
+	//   data size: 64
+	//   header size: 14
+	//   footer size: 4
+	//   total: 64 + 14 + 4 == 82
+	assert(buffer.size == 82);
 	// check destination
 	assert(bufdata[0] == 0x11);
 	assert(bufdata[1] == 0x22);
@@ -55,7 +61,12 @@ static void test_pack(void)
 	assert(bufdata[15] == 's');
 	assert(bufdata[16] == 'g');
 	assert(bufdata[17] == 0);
-	// TODO : check 32-bit CRC */
+	// CRC32 generated with rhash
+	//   A4064D55
+	assert(bufdata[14 + 64 + 0] == 0xa4);
+	assert(bufdata[14 + 64 + 1] == 0x06);
+	assert(bufdata[14 + 64 + 2] == 0x4d);
+	assert(bufdata[14 + 64 + 3] == 0x55);
 }
 
 int main(void)

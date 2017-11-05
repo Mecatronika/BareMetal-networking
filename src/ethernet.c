@@ -96,6 +96,8 @@ int libnet_ethernet_pack(struct libnet_ethernet *ethernet,
 	header[14 + data_size + 2] = (0x0000ff00 & crc) >> 8;
 	header[14 + data_size + 3] = (0x000000ff & crc) >> 0;
 
+	buffer->size += 4;
+
 	return 0;
 }
 
