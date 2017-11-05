@@ -9,13 +9,14 @@ CFLAGS += -I ../include
 VPATH += ../include/libnet
 
 .PHONY: all
-all: libnet.a buffer-test crc-test ethernet-test mac-test
+all: libnet.a buffer-test crc-test ethernet-test ipv6-test mac-test
 
 libnet.a: \
 	buffer.o \
 	crc.o \
 	crc32.o \
 	ethernet.o \
+	ipv6.o \
 	mac.o \
 	mutator.o \
 	pipe.o \
@@ -43,6 +44,12 @@ ethernet-test.o: ethernet-test.c ethernet.h protocol.h stack.h pipe.h
 
 ethernet-test: ethernet-test.o -lnet
 
+ipv6.o: ipv6.c ipv6.h
+
+ipv6-test.o: ipv6-test.c ipv6.h
+
+ipv6-test: ipv6-test.o -lnet
+
 mac.o: mac.c mac.h
 
 mac-test.o: mac-test.c mac.h
@@ -64,11 +71,12 @@ clean:
 	$(RM) libnet.a
 
 .PHONY: test
-test: buffer-test crc-test mac-test ethernet-test
+test: buffer-test crc-test mac-test ethernet-test ipv6-test
 	./buffer-test
 	./crc-test
 	./mac-test
 	./ethernet-test
+	./ipv6-test
 
 .PHONY: install
 install:

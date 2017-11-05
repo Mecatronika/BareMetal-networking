@@ -9,6 +9,7 @@ $CC $CFLAGS -c buffer.c -o buffer.o
 $CC $CFLAGS -c crc.c -o crc.o
 $CC $CFLAGS -c crc32.c -o crc32.o
 $CC $CFLAGS -c ethernet.c -o ethernet.o
+$CC $CFLAGS -c ipv6.c -o ipv6.o
 $CC $CFLAGS -c mac.c -o mac.o
 $CC $CFLAGS -c mutator.c -o mutator.o
 $CC $CFLAGS -c pipe.c -o pipe.o
@@ -23,6 +24,7 @@ $AR $ARFLAGS libnet.a \
 	crc.o \
 	crc32.o \
 	ethernet.o \
+	ipv6.o \
 	mac.o \
 	mutator.o \
 	pipe.o \
@@ -33,3 +35,4 @@ $CC $CFLAGS buffer-test.c -o buffer-test libnet.a
 $CC $CFLAGS crc-test.c -o crc-test libnet.a
 $CC $CFLAGS mac-test.c -o mac-test libnet.a
 $CC $CFLAGS ethernet-test.c -o ethernet-test libnet.a
+$CC $CFLAGS ipv6-test.c -o ipv6-test libnet.a
