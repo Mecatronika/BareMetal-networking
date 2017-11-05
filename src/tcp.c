@@ -81,7 +81,61 @@ int libnet_tcp_set_destination(struct libnet_tcp *tcp,
 int libnet_tcp_pack(struct libnet_tcp *tcp,
                     struct libnet_buffer *buffer)
 {
-	(void) tcp;
-	(void) buffer;
-	return -1;
+	int err = libnet_buffer_shift(buffer, 20);
+	if (err != 0)
+		return err;
+
+	unsigned char *header = buffer->data;
+
+	// source port
+	header[0] = (0xff00 & tcp->source) >> 8;
+	header[1] = (0x00ff & tcp->source) >> 0;
+	// destination port
+	header[2] = (0xff00 & tcp->destination) >> 8;
+	header[3] = (0x00ff & tcp->destination) >> 0;
+	// sequence number
+	header[4] = (0xff000000 & tcp->sequence) >> 24;
+	header[5] = (0x00ff0000 & tcp->sequence) >> 16;
+	header[6] = (0x0000ff00 & tcp->sequence) >> 8;
+	header[7] = (0x000000ff & tcp->sequence) >> 0;
+	// acknowledgment
+	header[8]  = (0xff000000 & tcp->acknowledgment) >> 24;
+	header[9]  = (0x00ff0000 & tcp->acknowledgment) >> 16;
+	header[10] = (0x0000ff00 & tcp->acknowledgment) >> 8;
+	header[11] = (0x000000ff & tcp->acknowledgment) >> 0;
+	// zero fields that require bit shifting
+	header[12] = 0;
+	header[13] = 0;
+	// data offset (5 32-bit words)
+	header[12] = (5 << 4);
+	// control bits
+	if (tcp->control_bits & LIBNET_TCP_NS)
+		header[12] |= 0x01;
+	if (tcp->control_bits & LIBNET_TCP_CWR)
+		header[13] |= 0x80;
+	if (tcp->control_bits & LIBNET_TCP_ECE)
+		header[13] |= 0x40;
+	if (tcp->control_bits & LIBNET_TCP_URG)
+		header[13] |= 0x20;
+	if (tcp->control_bits & LIBNET_TCP_ACK)
+		header[13] |= 0x10;
+	if (tcp->control_bits & LIBNET_TCP_PSH)
+		header[13] |= 0x08;
+	if (tcp->control_bits & LIBNET_TCP_RST)
+		header[13] |= 0x04;
+	if (tcp->control_bits & LIBNET_TCP_SYN)
+		header[13] |= 0x02;
+	if (tcp->control_bits & LIBNET_TCP_FIN)
+		header[13] |= 0x01;
+	// window size
+	header[14] = (tcp->window_size & 0xff00) >> 8;
+	header[15] = (tcp->window_size & 0x00ff) >> 0;
+	// checksum placeholder
+	header[16] = 0;
+	header[17] = 0;
+	// urgent pointer
+	header[18] = (tcp->urgent_pointer & 0xff00) >> 8;
+	header[19] = (tcp->urgent_pointer & 0x00ff) >> 0;
+	// TODO : checksum
+	return 0;
 }
