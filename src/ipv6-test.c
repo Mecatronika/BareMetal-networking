@@ -89,9 +89,74 @@ static void test_pack(void)
 	assert(memcmp(&bufdata[8 + 16], "\xff\x00\xee\x11\xdd\x22\xcc\x33\xbb\x44\xaa\x55\x99\x66\x88\x77", 16) == 0);
 }
 
+static void test_unpack(void)
+{
+	unsigned char bufdata[128];
+	// IP version
+	bufdata[0] = 0x60;
+	// traffic class / flow label
+	bufdata[1] = 0x00;
+	bufdata[2] = 0x00;
+	bufdata[3] = 0x00;
+	// payload length (4)
+	bufdata[4] = 0x00;
+	bufdata[5] = 0x04;
+	// next header (TCP)
+	bufdata[6] = 0x06;
+	// hop limit
+	bufdata[7] = 0xff;
+	// source address
+	bufdata[8] = 0x12;
+	bufdata[9] = 0x21;
+	bufdata[10] = 0x12;
+	bufdata[11] = 0x21;
+	bufdata[12] = 0x12;
+	bufdata[13] = 0x21;
+	bufdata[14] = 0x12;
+	bufdata[15] = 0x21;
+	bufdata[16] = 0x12;
+	bufdata[17] = 0x21;
+	bufdata[18] = 0x12;
+	bufdata[19] = 0x21;
+	bufdata[20] = 0x12;
+	bufdata[21] = 0x21;
+	bufdata[22] = 0x12;
+	bufdata[23] = 0x21;
+	// destination address
+	bufdata[24] = 0x55;
+	bufdata[25] = 0x66;
+	bufdata[26] = 0x55;
+	bufdata[27] = 0x66;
+	bufdata[28] = 0x55;
+	bufdata[29] = 0x66;
+	bufdata[30] = 0x55;
+	bufdata[31] = 0x66;
+	bufdata[32] = 0x55;
+	bufdata[33] = 0x66;
+	bufdata[34] = 0x55;
+	bufdata[35] = 0x66;
+	bufdata[36] = 0x55;
+	bufdata[37] = 0x66;
+	bufdata[38] = 0x55;
+	bufdata[39] = 0x66;
+
+	struct libnet_buffer buffer;
+	buffer.data = bufdata;
+	buffer.size = 40;
+	buffer.reserved = sizeof(bufdata);
+
+	struct libnet_ipv6 ipv6;
+	libnet_ipv6_init(&ipv6);
+
+	int err = libnet_ipv6_unpack(&ipv6, &buffer);
+	assert(err == 0);
+	assert(ipv6.protocol == LIBNET_IPV6_PROTOCOL_TCP);
+}
+
 int main(void)
 {
 	test_address_parse();
 	test_pack();
+	test_unpack();
 	return EXIT_SUCCESS;
 }
