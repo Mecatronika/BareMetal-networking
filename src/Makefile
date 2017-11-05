@@ -20,8 +20,14 @@ libfiles += protocol.o
 libfiles += stack.o
 libfiles += tcp.o
 
+tests += buffer-test
+tests += crc-test
+tests += ethernet-test
+tests += ipv6-test
+tests += mac-test
+
 .PHONY: all
-all: libnet.a buffer-test crc-test ethernet-test ipv6-test mac-test
+all: libnet.a $(tests)
 
 libnet.a: $(libfiles)
 	$(AR) $(ARFLAGS) $@ $^
@@ -71,7 +77,7 @@ tcp.o: tcp.c tcp.h
 .PHONY: clean
 clean:
 	$(RM) $(libfiles)
-	$(RM) buffer-test buffer-test.o crc-test crc-test.o ethernet-test ethernet-test.o mac-test.o mac-test ipv6-test.o ipv6-test
+	$(RM) $(tests)
 	$(RM) libnet.a
 
 .PHONY: test
