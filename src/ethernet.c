@@ -116,6 +116,42 @@ int libnet_ethernet_unpack(struct libnet_ethernet *ethernet,
 		ethernet->source.octets[i] = header[i + 6];
 	}
 
+	unsigned int length = 0;
+	length |= ((unsigned int) header[12]) << 8;
+	length |= ((unsigned int) header[13]) << 0;
+	if (length  < 1500)
+	{
+		ethernet->type = LIBNET_ETHERTYPE_NONE;
+		ethernet->length = length;
+	}
+	else if (length == 0x0800)
+	{
+		ethernet->type = LIBNET_ETHERTYPE_IPV4;
+		ethernet->length = 0;
+	}
+	else if (length == 0x0806)
+	{
+		ethernet->type = LIBNET_ETHERTYPE_ARP;
+		ethernet->length = 0;
+	}
+	else if (length == 0x86dd)
+	{
+		ethernet->type = LIBNET_ETHERTYPE_IPV6;
+		ethernet->length = 0;
+	}
+	else
+	{
+		ethernet->type = LIBNET_ETHERTYPE_UNKNOWN;
+		ethernet->length = 0;
+	}
+
+	int err = libnet_buffer_shift_left(buffer, 14);
+	if (err != 0)
+		return err;
+
+	// remove checksum
+	buffer->size -= 4;
+
 	return 0;
 }
 
