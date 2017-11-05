@@ -8,6 +8,7 @@ The goals of the project are this:
  - Avoid dynamic buffer resizing, which reduces performance and security
  - Avoid arbitrary compile-time limits to allow scalability
  - Allow usage in both kernel and user space to increase reusability
+ - Allow the integration of custom protocol implementations
 
 Applications:
 
