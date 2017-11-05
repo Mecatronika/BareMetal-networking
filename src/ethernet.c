@@ -55,15 +55,12 @@ int libnet_ethernet_pack(struct libnet_ethernet *ethernet,
 	if ((buffer->size < 46) || (buffer->size > 1500))
 		return -1;
 
-	const unsigned char *data = (const unsigned char *) buffer->data;
 	size_t data_size = buffer->size;
 
 	// MAC dst + MAC src + length/ethertype
 	int err = libnet_buffer_shift(buffer, 14);
 	if (err != 0)
 		return err;
-
-	data = &data[14];
 
 	unsigned char *header = buffer->data;
 
@@ -89,12 +86,12 @@ int libnet_ethernet_pack(struct libnet_ethernet *ethernet,
 		header[13] = (unsigned char) ((data_size & 0x00ff) >> 0);
 	}
 
-	uint32_t crc = libnet_crc32(data, data_size);
+	uint32_t crc = libnet_crc32(buffer->data, buffer->size);
 
-	header[14 + data_size + 0] = (0xff000000 & crc) >> 24;
-	header[14 + data_size + 1] = (0x00ff0000 & crc) >> 16;
-	header[14 + data_size + 2] = (0x0000ff00 & crc) >> 8;
-	header[14 + data_size + 3] = (0x000000ff & crc) >> 0;
+	header[14 + data_size + 3] = (0xff000000 & crc) >> 24;
+	header[14 + data_size + 2] = (0x00ff0000 & crc) >> 16;
+	header[14 + data_size + 1] = (0x0000ff00 & crc) >> 8;
+	header[14 + data_size + 0] = (0x000000ff & crc) >> 0;
 
 	buffer->size += 4;
 
