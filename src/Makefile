@@ -21,7 +21,8 @@ libnet.a: \
 	mutator.o \
 	pipe.o \
 	protocol.o \
-	stack.o
+	stack.o \
+	tcp.o
 	$(AR) $(ARFLAGS) $@ $^
 
 buffer.o: buffer.c buffer.h
@@ -64,10 +65,12 @@ protocol.o: protocol.c protocol.h
 
 stack.o: stack.c stack.h protocol.h pipe.h
 
+tcp.o: tcp.c tcp.h
+
 .PHONY: clean
 clean:
-	$(RM) buffer.o ethernet.o mac.o pipe.o protocol.o stack.o
-	$(RM) buffer-test crc-test mac-test.o mac-test
+	$(RM) buffer.o ethernet.o mac.o pipe.o protocol.o stack.o tcp.o
+	$(RM) buffer-test buffer-test.o crc-test crc-test.o ethernet-test ethernet-test.o mac-test.o mac-test ipv6-test.o ipv6-test
 	$(RM) libnet.a
 
 .PHONY: test

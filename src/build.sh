@@ -15,6 +15,7 @@ $CC $CFLAGS -c mutator.c -o mutator.o
 $CC $CFLAGS -c pipe.c -o pipe.o
 $CC $CFLAGS -c protocol.c -o protocol.o
 $CC $CFLAGS -c stack.c -o stack.o
+$CC $CFLAGS -c tcp.c -o tcp.o
 
 AR=ar
 ARFLAGS=rcs
@@ -29,7 +30,8 @@ $AR $ARFLAGS libnet.a \
 	mutator.o \
 	pipe.o \
 	protocol.o \
-	stack.o
+	stack.o \
+	tcp.o
 
 $CC $CFLAGS buffer-test.c -o buffer-test libnet.a
 $CC $CFLAGS crc-test.c -o crc-test libnet.a
