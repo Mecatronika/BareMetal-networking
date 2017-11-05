@@ -112,7 +112,7 @@ static void test_unpack(void)
 	int err = libnet_ethernet_unpack(&ethernet, &buffer);
 	assert(err == 0);
 	assert(memcmp(ethernet.destination.octets, "\x23\x32\x23\x32\x23\x32", 6) == 0);
-	assert(memcmp(ethernet.source.octets, "\x12\x32\x12\x21\x12\x21", 6) == 0);
+	assert(memcmp(ethernet.source.octets, "\x12\x21\x12\x21\x12\x21", 6) == 0);
 }
 
 int main(void)
