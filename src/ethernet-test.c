@@ -61,12 +61,11 @@ static void test_pack(void)
 	assert(bufdata[15] == 's');
 	assert(bufdata[16] == 'g');
 	assert(bufdata[17] == 0);
-	// CRC32 generated with rhash
-	//   A4064D55
-	assert(bufdata[14 + 64 + 0] == 0xa4);
-	assert(bufdata[14 + 64 + 1] == 0x06);
-	assert(bufdata[14 + 64 + 2] == 0x4d);
-	assert(bufdata[14 + 64 + 3] == 0x55);
+	// check crc32 (verified with WireShark)
+	assert(bufdata[14 + 64 + 0] == 96);
+	assert(bufdata[14 + 64 + 1] == 161);
+	assert(bufdata[14 + 64 + 2] == 247);
+	assert(bufdata[14 + 64 + 3] == 21);
 }
 
 int main(void)
