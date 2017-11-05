@@ -101,8 +101,19 @@ int libnet_ethernet_pack(struct libnet_ethernet *ethernet,
 int libnet_ethernet_unpack(struct libnet_ethernet *ethernet,
                            struct libnet_buffer *buffer)
 {
-	(void) ethernet;
-	(void) buffer;
+	// ethernet header should be at
+	// least eighteen bytes long
+	if (buffer->size < 18)
+		return -1;
+
+	unsigned char *header = buffer->data;
+
+	for (size_t i = 0; i < 6; i++)
+	{
+		ethernet->destination.octets[i] = header[i];
+		ethernet->source.octets[i] = header[i + 6];
+	}
+
 	return 0;
 }
 
