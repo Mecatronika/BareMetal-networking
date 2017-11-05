@@ -14,6 +14,7 @@ extern "C"
 {
 #endif
 
+struct libnet_buffer;
 struct libnet_mutator;
 
 /// @brief Identifies which protocol
@@ -45,19 +46,15 @@ struct libnet_protocol
 	void *data;
 	/// @brief Called when the protocol
 	/// is no longer going to be used.
-	void (*done)(void *data);
+	void (*done)(void *protocol_data);
 	/// @brief Attempts to read data from
 	/// the protocol.
-	int (*read)(void *protocol_data,
-	            void *buf,
-	            unsigned long long int buf_size,
-	            unsigned long long int *read_size);
+	int (*pack)(void *protocol_data,
+	            struct libnet_buffer *buffer);
 	/// @brief Attempts to write data to
 	/// the protocol.
-	int (*write)(void *protocol_data,
-	             const void *buf,
-	             unsigned long long int buf_size,
-	             unsigned long long int *write_size);
+	int (*unpack)(void *protocol_data,
+	              struct libnet_buffer *buffer);
 	/// @brief Modify protocol data.
 	int (*mutate)(void *protocol_data,
 	              const struct libnet_mutator *mutator);
@@ -77,6 +74,12 @@ void libnet_protocol_done(struct libnet_protocol *protocol);
 /// @param src The structure to move the contents from.
 void libnet_protocol_move(struct libnet_protocol *dst,
                           struct libnet_protocol *src);
+
+int libnet_protocol_pack(struct libnet_protocol *protocol,
+                         struct libnet_buffer *buffer);
+
+int libnet_protocol_unpack(struct libnet_protocol *protocol,
+                           struct libnet_buffer *buffer);
 
 /// @brief Modify the protocol data.
 int libnet_protocol_mutate(struct libnet_protocol *protocol,
