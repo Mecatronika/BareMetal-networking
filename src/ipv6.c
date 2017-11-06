@@ -130,7 +130,31 @@ int libnet_ipv6_unpack(struct libnet_ipv6 *ipv6,
 		// Not an IPv6 protocol
 		return -1;
 
-	(void) ipv6;
+	unsigned int length = 0;
+	length |= ((unsigned int) header[4]) << 8;
+	length |= ((unsigned int) header[5]) << 0;
+	ipv6->length = length;
+
+	unsigned int next_header = 0;
+	next_header = header[6];
+	if (next_header == 6)
+		ipv6->protocol = LIBNET_IP_TCP;
+	else if (next_header == 17)
+		ipv6->protocol = LIBNET_IP_UDP;
+	else
+	{
+		ipv6->protocol = LIBNET_IP_UNKNOWN;
+		// unknown protocol
+		return -1;
+	}
+
+	ipv6->hop_limit = header[7];
+
+	for (size_t i = 0; i < 16; i++)
+	{
+		ipv6->source.octets[i] = header[8 + i];
+		ipv6->destination.octets[i] = header[8 + i + 16];
+	}
 
 	return 0;
 }
