@@ -9,6 +9,8 @@
 #ifndef LIBNET_IPV6_H
 #define LIBNET_IPV6_H
 
+#include <libnet/ip.h>
+
 #include <stdlib.h>
 
 #ifdef __cplusplus
@@ -18,17 +20,6 @@ extern "C"
 
 struct libnet_buffer;
 struct libnet_mutator;
-
-/// @brief Indicates the data protocol of
-/// the content following the IPv6 header.
-enum libnet_ipv6_protocol
-{
-	/// @brief Transmission Control Protocol.
-	/// This is the default.
-	LIBNET_IPV6_PROTOCOL_TCP,
-	/// @brief User Datagram Protocol.
-	LIBNET_IPV6_PROTOCOL_UDP
-};
 
 struct libnet_ipv6_address
 {
@@ -53,7 +44,7 @@ struct libnet_ipv6
 	unsigned int hop_limit;
 	/// @brief Indicates the protocol following
 	/// the IPv6 header.
-	enum libnet_ipv6_protocol protocol;
+	enum libnet_ip protocol;
 	/// @brief The source address.
 	struct libnet_ipv6_address source;
 	/// @brief The destination address.

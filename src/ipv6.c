@@ -56,7 +56,7 @@ int libnet_ipv6_address_parse(struct libnet_ipv6_address *address,
 void libnet_ipv6_init(struct libnet_ipv6 *ipv6)
 {
 	ipv6->hop_limit = 255;
-	ipv6->protocol = LIBNET_IPV6_PROTOCOL_TCP;
+	ipv6->protocol = LIBNET_IP_TCP;
 	libnet_ipv6_address_init(&ipv6->source);
 	libnet_ipv6_address_init(&ipv6->destination);
 }
@@ -99,9 +99,9 @@ int libnet_ipv6_pack(struct libnet_ipv6 *ipv6,
 	header[4] |= (data_size & 0x0000ff00) >> 8;
 	header[5] |= (data_size & 0x000000ff) >> 0;
 
-	if (ipv6->protocol == LIBNET_IPV6_PROTOCOL_TCP)
+	if (ipv6->protocol == LIBNET_IP_TCP)
 		header[6] = 0x06;
-	else if (ipv6->protocol == LIBNET_IPV6_PROTOCOL_UDP)
+	else if (ipv6->protocol == LIBNET_IP_UDP)
 		header[6] = 0x17;
 	else
 		// unsupported protocol
@@ -121,9 +121,18 @@ int libnet_ipv6_pack(struct libnet_ipv6 *ipv6,
 int libnet_ipv6_unpack(struct libnet_ipv6 *ipv6,
                        struct libnet_buffer *buffer)
 {
+	if (buffer->size < 40)
+		return -1;
+
+	unsigned char *header = buffer->data;
+
+	if ((header[0] & 0xf0) != 0x60)
+		// Not an IPv6 protocol
+		return -1;
+
 	(void) ipv6;
-	(void) buffer;
-	return -1;
+
+	return 0;
 }
 
 int libnet_ipv6_mutate(struct libnet_ipv6 *ipv6,
