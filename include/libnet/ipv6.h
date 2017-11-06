@@ -43,11 +43,14 @@ int libnet_ipv6_address_parse(struct libnet_ipv6_address *address,
 /// @brief The IPv6 protocol.
 struct libnet_ipv6
 {
+	/// @brief The length of the data following
+	/// the IPv6 header.
+	unsigned int length;
 	/// @brief The number of times this packet
 	/// may be forwarded until it's discarded.
 	/// This value cannot exceed 255, and is set
 	/// to 255 by default.
-	size_t hop_limit;
+	unsigned int hop_limit;
 	/// @brief Indicates the protocol following
 	/// the IPv6 header.
 	enum libnet_ipv6_protocol protocol;
