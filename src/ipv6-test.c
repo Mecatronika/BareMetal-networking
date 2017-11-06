@@ -101,10 +101,10 @@ static void test_unpack(void)
 	// payload length (4)
 	bufdata[4] = 0x00;
 	bufdata[5] = 0x04;
-	// next header (TCP)
-	bufdata[6] = 0x06;
+	// next header (UDP)
+	bufdata[6] = 0x11;
 	// hop limit
-	bufdata[7] = 0xff;
+	bufdata[7] = 0xfe;
 	// source address
 	bufdata[8] = 0x12;
 	bufdata[9] = 0x21;
@@ -139,6 +139,11 @@ static void test_unpack(void)
 	bufdata[37] = 0x66;
 	bufdata[38] = 0x55;
 	bufdata[39] = 0x66;
+	// payload
+	bufdata[40] = 't';
+	bufdata[41] = 'e';
+	bufdata[42] = 's';
+	bufdata[43] = 't';
 
 	struct libnet_buffer buffer;
 	buffer.data = bufdata;
@@ -150,7 +155,11 @@ static void test_unpack(void)
 
 	int err = libnet_ipv6_unpack(&ipv6, &buffer);
 	assert(err == 0);
-	assert(ipv6.protocol == LIBNET_IPV6_PROTOCOL_TCP);
+	assert(ipv6.protocol == LIBNET_IP_UDP);
+	assert(ipv6.length == 4);
+	assert(ipv6.hop_limit == 0xfe);
+	assert(memcmp(ipv6.source.octets, "\x12\x21\x12\x21\x12\x21\x12\x21\x12\x21\x12\x21\x12\x21\x12\x21", 16) == 0);
+	assert(memcmp(ipv6.destination.octets, "\x55\x66\x55\x66\x55\x66\x55\x66\x55\x66\x55\x66\x55\x66\x55\x66", 16) == 0);
 }
 
 int main(void)
