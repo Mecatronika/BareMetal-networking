@@ -97,9 +97,62 @@ static void test_pack(void)
 	assert(strcmp((char *) &bufdata[20], "Hello, TCP!") == 0);
 }
 
+static void test_unpack(void)
+{
+	unsigned char bufdata[32];
+	// set source port (32)
+	bufdata[0] = 0x00;
+	bufdata[1] = 0x20;
+	// set destination port (128)
+	bufdata[2] = 0x01;
+	bufdata[3] = 0x00;
+	// set sequence number (0x01020102)
+	bufdata[4] = 0x01;
+	bufdata[5] = 0x02;
+	bufdata[6] = 0x01;
+	bufdata[7] = 0x02;
+	// set acknowledgment (0x40304030)
+	bufdata[8] = 0x40;
+	bufdata[9] = 0x30;
+	bufdata[10] = 0x40;
+	bufdata[11] = 0x30;
+	// set data offset (5) and control bits (NS)
+	bufdata[12] = 0x51;
+	// control bits
+	bufdata[13] = 0;
+	// window size
+	bufdata[14] = 0x21;
+	bufdata[15] = 0x12;
+	// TODO : checksum
+	bufdata[16] = 0;
+	bufdata[17] = 0;
+	// urgent pointer
+	bufdata[18] = 0x11;
+	bufdata[18] = 0x99;
+
+	struct libnet_buffer buffer;
+	buffer.data = bufdata;
+	buffer.size = 12;
+	buffer.reserved = sizeof(buffer);
+
+	struct libnet_tcp tcp;
+	libnet_tcp_init(&tcp);
+
+	int err = libnet_tcp_unpack(&tcp, &buffer);
+	assert(err == 0);
+	assert(tcp.source == 0x20);
+	assert(tcp.destination = 0x100);
+	assert(tcp.sequence == 0x01020102);
+	assert(tcp.acknowledgment == 0x40304030);
+	assert((tcp.control_bits & LIBNET_TCP_NS) == LIBNET_TCP_NS);
+	assert(tcp.window_size == 0x2112);
+	assert(tcp.urgent_pointer == 0x1199);
+}
+
 int main(void)
 {
 	test_port_parsing();
 	test_pack();
+	test_unpack();
 	return EXIT_SUCCESS;
 }

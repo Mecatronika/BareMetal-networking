@@ -149,3 +149,11 @@ int libnet_tcp_pack(struct libnet_tcp *tcp,
 	// TODO : checksum
 	return 0;
 }
+
+int libnet_tcp_unpack(struct libnet_tcp *tcp,
+                      struct libnet_buffer *buffer)
+{
+	(void) tcp;
+	(void) buffer;
+	return -1;
+}
