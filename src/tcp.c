@@ -7,6 +7,7 @@
 #include <libnet/tcp.h>
 
 #include <libnet/buffer.h>
+#include <libnet/error.h>
 #include <libnet/mutator.h>
 
 #include <limits.h>
@@ -40,16 +41,16 @@ static int parse_port(unsigned int *port_ptr,
 			port += c - '0';
 		}
 		else
-			return -1;
+			return LIBNET_ERROR_BAD_FIELD;
 	}
 
 	// port exceeds maximum
 	if (port > 65535)
-		return -1;
+		return LIBNET_ERROR_BAD_FIELD;
 
 	*port_ptr = (unsigned int) port;
 
-	return 0;
+	return LIBNET_ERROR_NONE;
 }
 
 void libnet_tcp_init(struct libnet_tcp *tcp)
@@ -83,7 +84,7 @@ int libnet_tcp_mutate(struct libnet_tcp *tcp,
                       const struct libnet_mutator *mutator)
 {
 	if (mutator->mutate_tcp == NULL)
-		return 0;
+		return LIBNET_ERROR_NONE;
 
 	return mutator->mutate_tcp(mutator->data, tcp);
 }
@@ -147,13 +148,71 @@ int libnet_tcp_pack(struct libnet_tcp *tcp,
 	header[18] = (tcp->urgent_pointer & 0xff00) >> 8;
 	header[19] = (tcp->urgent_pointer & 0x00ff) >> 0;
 	// TODO : checksum
-	return 0;
+	return LIBNET_ERROR_NONE;
 }
 
 int libnet_tcp_unpack(struct libnet_tcp *tcp,
                       struct libnet_buffer *buffer)
 {
-	(void) tcp;
-	(void) buffer;
-	return -1;
+	if (buffer->size < 20)
+		return LIBNET_ERROR_MISSING_DATA;
+
+	unsigned char *header = (unsigned char *) buffer->data;
+
+	tcp->source = 0;
+	tcp->source |= ((unsigned int) header[0]) << 8;
+	tcp->source |= ((unsigned int) header[1]) << 0;
+
+	tcp->destination = 0;
+	tcp->destination |= ((unsigned int) header[2]) << 8;
+	tcp->destination |= ((unsigned int) header[3]) << 0;
+
+	tcp->sequence = 0;
+	tcp->sequence |= ((unsigned long int) header[4]) << 24;
+	tcp->sequence |= ((unsigned long int) header[5]) << 16;
+	tcp->sequence |= ((unsigned long int) header[6]) << 8;
+	tcp->sequence |= ((unsigned long int) header[7]) << 0;
+
+	tcp->acknowledgment = 0;
+	tcp->acknowledgment |= ((unsigned long int) header[8]) << 24;
+	tcp->acknowledgment |= ((unsigned long int) header[9]) << 16;
+	tcp->acknowledgment |= ((unsigned long int) header[10]) << 8;
+	tcp->acknowledgment |= ((unsigned long int) header[11]) << 0;
+
+	tcp->data_offset = ((unsigned int) (header[12] >> 4));
+
+	tcp->control_bits = 0;
+
+	if (header[12] & 0x01)
+		tcp->control_bits |= LIBNET_TCP_NS;
+	if (header[13] & 0x80)
+		tcp->control_bits |= LIBNET_TCP_CWR;
+	if (header[13] & 0x40)
+		tcp->control_bits |= LIBNET_TCP_ECE;
+	if (header[13] & 0x20)
+		tcp->control_bits |= LIBNET_TCP_URG;
+	if (header[13] & 0x10)
+		tcp->control_bits |= LIBNET_TCP_ACK;
+	if (header[13] & 0x08)
+		tcp->control_bits |= LIBNET_TCP_PSH;
+	if (header[13] & 0x04)
+		tcp->control_bits |= LIBNET_TCP_RST;
+	if (header[13] & 0x02)
+		tcp->control_bits |= LIBNET_TCP_SYN;
+	if (header[13] & 0x01)
+		tcp->control_bits |= LIBNET_TCP_FIN;
+
+	tcp->window_size = 0;
+	tcp->window_size |= ((unsigned int) header[14]) << 8;
+	tcp->window_size |= ((unsigned int) header[15]) << 0;
+
+	tcp->checksum = 0;
+	tcp->checksum |= ((unsigned int) header[16]) << 8;
+	tcp->checksum |= ((unsigned int) header[17]) << 0;
+
+	tcp->urgent_pointer = 0;
+	tcp->urgent_pointer |= ((unsigned int) header[18]) << 8;
+	tcp->urgent_pointer |= ((unsigned int) header[19]) << 0;
+
+	return LIBNET_ERROR_NONE;
 }
