@@ -1,93 +1,93 @@
-// =========================================================
-// libnet -- A network stack implementation for BareMetal OS
+// ===========================================================
+// netstack -- A network stack implementation for BareMetal OS
 //
 // Copyright (C) 2017 Return Infinity -- see LICENSE
-// =========================================================
+// ===========================================================
 
-#include <libnet/stack.h>
+#include <netstack/stack.h>
 
-#include <libnet/ethernet.h>
+#include <netstack/ethernet.h>
 
 #ifndef NULL
 #define NULL ((void *) 0x00)
 #endif
 
-const unsigned long long int libnet_protocol_max = LIBNET_PROTOCOL_MAX;
+const unsigned long long int netstack_protocol_max = NETSTACK_PROTOCOL_MAX;
 
 static int ethernet_pack(void *ethernet_ptr,
-                         struct libnet_buffer *buffer)
+                         struct netstack_buffer *buffer)
 {
-	struct libnet_ethernet *ethernet = (struct libnet_ethernet *) ethernet_ptr;
+	struct netstack_ethernet *ethernet = (struct netstack_ethernet *) ethernet_ptr;
 
-	return libnet_ethernet_pack(ethernet, buffer);
+	return netstack_ethernet_pack(ethernet, buffer);
 }
 
 static int ethernet_mutate(void *ethernet_ptr,
-                           const struct libnet_mutator *mutator)
+                           const struct netstack_mutator *mutator)
 {
-	struct libnet_ethernet *ethernet = (struct libnet_ethernet *) ethernet_ptr;
+	struct netstack_ethernet *ethernet = (struct netstack_ethernet *) ethernet_ptr;
 
-	return libnet_ethernet_mutate(ethernet, mutator);
+	return netstack_ethernet_mutate(ethernet, mutator);
 }
 
 static int ipv6_pack(void *ipv6_ptr,
-                     struct libnet_buffer *buffer)
+                     struct netstack_buffer *buffer)
 {
-	struct libnet_ipv6 *ipv6 = (struct libnet_ipv6 *) ipv6_ptr;
+	struct netstack_ipv6 *ipv6 = (struct netstack_ipv6 *) ipv6_ptr;
 
-	return libnet_ipv6_pack(ipv6, buffer);
+	return netstack_ipv6_pack(ipv6, buffer);
 }
 
 static int ipv6_mutate(void *ipv6_ptr,
-                       const struct libnet_mutator *mutator)
+                       const struct netstack_mutator *mutator)
 {
-	struct libnet_ipv6 *ipv6 = (struct libnet_ipv6 *) ipv6_ptr;
+	struct netstack_ipv6 *ipv6 = (struct netstack_ipv6 *) ipv6_ptr;
 
-	return libnet_ipv6_mutate(ipv6, mutator);
+	return netstack_ipv6_mutate(ipv6, mutator);
 }
 
 static int tcp_pack(void *tcp_ptr,
-                     struct libnet_buffer *buffer)
+                     struct netstack_buffer *buffer)
 {
-	struct libnet_tcp *tcp = (struct libnet_tcp *) tcp_ptr;
+	struct netstack_tcp *tcp = (struct netstack_tcp *) tcp_ptr;
 
-	return libnet_tcp_pack(tcp, buffer);
+	return netstack_tcp_pack(tcp, buffer);
 }
 
 static int tcp_mutate(void *tcp_ptr,
-                       const struct libnet_mutator *mutator)
+                      const struct netstack_mutator *mutator)
 {
-	struct libnet_tcp *tcp = (struct libnet_tcp *) tcp_ptr;
+	struct netstack_tcp *tcp = (struct netstack_tcp *) tcp_ptr;
 
-	return libnet_tcp_mutate(tcp, mutator);
+	return netstack_tcp_mutate(tcp, mutator);
 }
 
-void libnet_stack_init(struct libnet_stack *stack)
+void netstack_stack_init(struct netstack_stack *stack)
 {
-	libnet_pipe_init(&stack->pipe);
+	netstack_pipe_init(&stack->pipe);
 
-	for (unsigned long long int i = 0; i < LIBNET_PROTOCOL_MAX; i++)
-		libnet_protocol_init(&stack->protocol_array[i]);
+	for (unsigned long long int i = 0; i < NETSTACK_PROTOCOL_MAX; i++)
+		netstack_protocol_init(&stack->protocol_array[i]);
 
 	stack->protocol_count = 0;
 }
 
-void libnet_stack_done(struct libnet_stack *stack)
+void netstack_stack_done(struct netstack_stack *stack)
 {
-	libnet_pipe_done(&stack->pipe);
+	netstack_pipe_done(&stack->pipe);
 
-	for (unsigned long long int i = 0; i < LIBNET_PROTOCOL_MAX; i++)
-		libnet_protocol_done(&stack->protocol_array[i]);
+	for (unsigned long long int i = 0; i < NETSTACK_PROTOCOL_MAX; i++)
+		netstack_protocol_done(&stack->protocol_array[i]);
 }
 
-int libnet_stack_mutate(struct libnet_stack *stack,
-                        const struct libnet_mutator *mutator)
+int netstack_stack_mutate(struct netstack_stack *stack,
+                          const struct netstack_mutator *mutator)
 {
 	for (unsigned long long int i = 0; i < stack->protocol_count; i++)
 	{
-		struct libnet_protocol *protocol = &stack->protocol_array[i];
+		struct netstack_protocol *protocol = &stack->protocol_array[i];
 
-		int err = libnet_protocol_mutate(protocol, mutator);
+		int err = netstack_protocol_mutate(protocol, mutator);
 		if (err != 0)
 			return err;
 	}
@@ -95,67 +95,67 @@ int libnet_stack_mutate(struct libnet_stack *stack,
 	return 0;
 }
 
-int libnet_stack_push_ethernet(struct libnet_stack *stack)
+int netstack_stack_push_ethernet(struct netstack_stack *stack)
 {
-	libnet_ethernet_init(&stack->ethernet);
+	netstack_ethernet_init(&stack->ethernet);
 
-	struct libnet_protocol protocol;
-	libnet_protocol_init(&protocol);
+	struct netstack_protocol protocol;
+	netstack_protocol_init(&protocol);
 	protocol.data = &stack->ethernet;
 	protocol.done = NULL;
 	protocol.pack = ethernet_pack;
 	protocol.unpack = NULL;
 	protocol.mutate = ethernet_mutate;
-	return libnet_stack_push_protocol(stack, &protocol);
+	return netstack_stack_push_protocol(stack, &protocol);
 }
 
-int libnet_stack_push_ipv6(struct libnet_stack *stack)
+int netstack_stack_push_ipv6(struct netstack_stack *stack)
 {
-	libnet_ipv6_init(&stack->ipv6);
+	netstack_ipv6_init(&stack->ipv6);
 
-	struct libnet_protocol protocol;
-	libnet_protocol_init(&protocol);
+	struct netstack_protocol protocol;
+	netstack_protocol_init(&protocol);
 	protocol.data = &stack->ipv6;
 	protocol.done = NULL;
 	protocol.pack = ipv6_pack;
 	protocol.unpack = NULL;
 	protocol.mutate = ipv6_mutate;
-	return libnet_stack_push_protocol(stack, &protocol);
+	return netstack_stack_push_protocol(stack, &protocol);
 }
 
-int libnet_stack_push_tcp(struct libnet_stack *stack)
+int netstack_stack_push_tcp(struct netstack_stack *stack)
 {
-	libnet_tcp_init(&stack->tcp);
+	netstack_tcp_init(&stack->tcp);
 
-	struct libnet_protocol protocol;
-	libnet_protocol_init(&protocol);
+	struct netstack_protocol protocol;
+	netstack_protocol_init(&protocol);
 	protocol.data = &stack->tcp;
 	protocol.done = NULL;
 	protocol.pack = tcp_pack;
 	protocol.unpack = NULL;
 	protocol.mutate = tcp_mutate;
-	return libnet_stack_push_protocol(stack, &protocol);
+	return netstack_stack_push_protocol(stack, &protocol);
 }
 
-int libnet_stack_push_protocol(struct libnet_stack *stack,
-                               struct libnet_protocol *protocol)
+int netstack_stack_push_protocol(struct netstack_stack *stack,
+                                 struct netstack_protocol *protocol)
 {
-	if (stack->protocol_count >= libnet_protocol_max)
+	if (stack->protocol_count >= netstack_protocol_max)
 		return -1;
 
-	libnet_protocol_move(&stack->protocol_array[stack->protocol_count], protocol);
+	netstack_protocol_move(&stack->protocol_array[stack->protocol_count], protocol);
 
 	stack->protocol_count++;
 
 	return 0;
 }
 
-int libnet_stack_pack(struct libnet_stack *stack,
-                      struct libnet_buffer *buffer)
+int netstack_stack_pack(struct netstack_stack *stack,
+                        struct netstack_buffer *buffer)
 {
 	for (size_t i = stack->protocol_count; i > 0; i--)
 	{
-		int err = libnet_protocol_pack(&stack->protocol_array[i - 1], buffer);
+		int err = netstack_protocol_pack(&stack->protocol_array[i - 1], buffer);
 		if (err != 0)
 			return err;
 	}
@@ -163,16 +163,16 @@ int libnet_stack_pack(struct libnet_stack *stack,
 	return 0;
 }
 
-int libnet_stack_read(struct libnet_stack *stack,
-                      struct libnet_buffer *buffer)
+int netstack_stack_read(struct netstack_stack *stack,
+                        struct netstack_buffer *buffer)
 {
 	(void) stack;
 	(void) buffer;
 	return 0;
 }
 
-void libnet_stack_set_pipe(struct libnet_stack *stack,
-                           struct libnet_pipe *pipe)
+void netstack_stack_set_pipe(struct netstack_stack *stack,
+                             struct netstack_pipe *pipe)
 {
-	libnet_pipe_move(&stack->pipe, pipe);
+	netstack_pipe_move(&stack->pipe, pipe);
 }

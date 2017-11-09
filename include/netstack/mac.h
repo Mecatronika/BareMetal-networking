@@ -1,13 +1,13 @@
-// =========================================================
-// libnet -- A network stack implementation for BareMetal OS
+// ===========================================================
+// netstack -- A network stack implementation for BareMetal OS
 //
 // Copyright (C) 2017 Return Infinity -- see LICENSE
-//==========================================================
+//============================================================
 
 /// @file mac.h
 
-#ifndef LIBNET_MAC_H
-#define LIBNET_MAC_H
+#ifndef NETSTACK_MAC_H
+#define NETSTACK_MAC_H
 
 #ifdef __cplusplus
 extern "C"
@@ -18,7 +18,7 @@ extern "C"
 /// media access control. It is used in
 /// ethernet headers to specify source and
 /// destinations.
-struct libnet_mac
+struct netstack_mac
 {
 	/// @brief The six octets that make
 	/// up the address.
@@ -26,7 +26,7 @@ struct libnet_mac
 };
 
 /// @brief Initializes the MAC address to zero.
-void libnet_mac_init(struct libnet_mac *mac);
+void netstack_mac_init(struct netstack_mac *mac);
 
 /// @brief Parses a string containing a MAC address.
 /// @param mac A MAC address structure.
@@ -37,9 +37,9 @@ void libnet_mac_init(struct libnet_mac *mac);
 /// may be contained by @p str.
 /// @returns Zero if the function is successful, non-zero
 /// otherwise.
-int libnet_mac_parse(struct libnet_mac *mac,
-                     const char *str,
-                     unsigned long long int len);
+int netstack_mac_parse(struct netstack_mac *mac,
+                       const char *str,
+                       unsigned long long int len);
 
 /// @brief Writes the MAC address to a string.
 /// The MAC address will be separated by dashes.
@@ -50,12 +50,12 @@ int libnet_mac_parse(struct libnet_mac *mac,
 /// may be stored by @p str. This should be greater than
 /// or equal to eighteen.
 /// @returns Zero on success, non-zero otherwise.
-int libnet_mac_write(const struct libnet_mac *mac,
-                     char *str,
-                     unsigned long long int len);
+int netstack_mac_write(const struct netstack_mac *mac,
+                       char *str,
+                       unsigned long long int len);
 
 #ifdef __cplusplus
 } // extern "C"
 #endif
 
-#endif // LIBNET_MAC_H
+#endif // NETSTACK_MAC_H

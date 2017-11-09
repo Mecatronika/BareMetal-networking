@@ -1,18 +1,18 @@
-// =========================================================
-// libnet -- A network stack implementation for BareMetal OS
+// ===========================================================
+// netstack -- A network stack implementation for BareMetal OS
 //
 // Copyright (C) 2017 Return Infinity -- see LICENSE
-// =========================================================
+// ===========================================================
 
-#include <libnet/protocol.h>
+#include <netstack/protocol.h>
 
 #ifndef NULL
 #define NULL ((void *) 0x00)
 #endif
 
-void libnet_protocol_init(struct libnet_protocol *protocol)
+void netstack_protocol_init(struct netstack_protocol *protocol)
 {
-	protocol->id = LIBNET_PROTOCOL_NONE;
+	protocol->id = NETSTACK_PROTOCOL_NONE;
 	protocol->data = NULL;
 	protocol->done = NULL;
 	protocol->pack = NULL;
@@ -20,24 +20,24 @@ void libnet_protocol_init(struct libnet_protocol *protocol)
 	protocol->mutate = NULL;
 }
 
-void libnet_protocol_done(struct libnet_protocol *protocol)
+void netstack_protocol_done(struct netstack_protocol *protocol)
 {
 	if (protocol->done)
 		protocol->done(protocol->data);
 }
 
-void libnet_protocol_move(struct libnet_protocol *dst,
-                          struct libnet_protocol *src)
+void netstack_protocol_move(struct netstack_protocol *dst,
+                            struct netstack_protocol *src)
 {
 	// copy the content
 	*dst = *src;
 	// reinitialize the old structure
 	// with zeroes and null-pointers.
-	libnet_protocol_init(src);
+	netstack_protocol_init(src);
 }
 
-int libnet_protocol_pack(struct libnet_protocol *protocol,
-                         struct libnet_buffer *buffer)
+int netstack_protocol_pack(struct netstack_protocol *protocol,
+                           struct netstack_buffer *buffer)
 {
 	if (protocol->pack == NULL)
 		return -1;
@@ -45,8 +45,8 @@ int libnet_protocol_pack(struct libnet_protocol *protocol,
 	return protocol->pack(protocol->data, buffer);
 }
 
-int libnet_protocol_unpack(struct libnet_protocol *protocol,
-                           struct libnet_buffer *buffer)
+int netstack_protocol_unpack(struct netstack_protocol *protocol,
+                             struct netstack_buffer *buffer)
 {
 	if (protocol->unpack == NULL)
 		return -1;
@@ -54,8 +54,8 @@ int libnet_protocol_unpack(struct libnet_protocol *protocol,
 	return protocol->unpack(protocol->data, buffer);
 }
 
-int libnet_protocol_mutate(struct libnet_protocol *protocol,
-                           const struct libnet_mutator *mutator)
+int netstack_protocol_mutate(struct netstack_protocol *protocol,
+                             const struct netstack_mutator *mutator)
 {
 	if (protocol->mutate == NULL)
 		return -1;

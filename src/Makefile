@@ -6,7 +6,7 @@ CC ?= gcc
 CFLAGS += -Wall -Wextra -Werror -Wfatal-errors -std=c99
 CFLAGS += -I ../include
 
-VPATH += ../include/libnet
+VPATH += ../include/netstack
 
 libfiles += accessor.o
 libfiles += buffer.o
@@ -29,22 +29,22 @@ tests += mac-test
 tests += tcp-test
 
 .PHONY: all
-all: libnet.a $(tests)
+all: libnetstack.a $(tests)
 
-libnet.a: $(libfiles)
+libnetstack.a: $(libfiles)
 	$(AR) $(ARFLAGS) $@ $^
 
 buffer.o: buffer.c buffer.h
 
 buffer-test.o: buffer-test.c buffer.h
 
-buffer-test: buffer-test.o -lnet
+buffer-test: buffer-test.o -lnetstack
 
 crc.o: crc.c crc.h
 
 crc-test.o: crc-test.c crc.h
 
-crc-test: crc-test.o -lnet
+crc-test: crc-test.o -lnetstack
 
 crc32.o: crc32.c
 
@@ -52,19 +52,19 @@ ethernet.o: ethernet.c ethernet.h mac.h
 
 ethernet-test.o: ethernet-test.c ethernet.h protocol.h stack.h pipe.h
 
-ethernet-test: ethernet-test.o -lnet
+ethernet-test: ethernet-test.o -lnetstack
 
 ipv6.o: ipv6.c ipv6.h
 
 ipv6-test.o: ipv6-test.c ipv6.h
 
-ipv6-test: ipv6-test.o -lnet
+ipv6-test: ipv6-test.o -lnetstack
 
 mac.o: mac.c mac.h
 
 mac-test.o: mac-test.c mac.h
 
-mac-test: mac-test.o -lnet
+mac-test: mac-test.o -lnetstack
 
 mutator.o: mutator.c mutator.h
 
@@ -78,13 +78,13 @@ tcp.o: tcp.c tcp.h
 
 tcp-test.o: tcp-test.c tcp.h
 
-tcp-test: tcp-test.o -lnet
+tcp-test: tcp-test.o -lnetstack
 
 .PHONY: clean
 clean:
 	$(RM) $(libfiles)
 	$(RM) $(tests) $(tests:=.o)
-	$(RM) libnet.a
+	$(RM) libnetstack.a
 
 .PHONY: test
 test: buffer-test crc-test mac-test ethernet-test ipv6-test
@@ -97,4 +97,4 @@ test: buffer-test crc-test mac-test ethernet-test ipv6-test
 
 .PHONY: install
 install:
-	cp libnet.a $(DESTDIR)$(PREFIX)/lib/libnet.a
+	cp libnetstack.a $(DESTDIR)$(PREFIX)/lib/libnetstack.a

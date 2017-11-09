@@ -1,20 +1,20 @@
-// =========================================================
-// libnet -- A network stack implementation for BareMetal OS
+// ===========================================================
+// netstack -- A network stack implementation for BareMetal OS
 //
 // Copyright (C) 2017 Return Infinity -- see LICENSE
-// =========================================================
+// ===========================================================
 
-#include <libnet/buffer.h>
+#include <netstack/buffer.h>
 
-void libnet_buffer_init(struct libnet_buffer *buffer)
+void netstack_buffer_init(struct netstack_buffer *buffer)
 {
 	buffer->data = NULL;
 	buffer->size = 0;
 	buffer->reserved = 0;
 }
 
-int libnet_buffer_shift(struct libnet_buffer *buffer,
-                        size_t shift_size)
+int netstack_buffer_shift(struct netstack_buffer *buffer,
+                          size_t shift_size)
 {
 	if (buffer->reserved < buffer->size)
 		// caller error
@@ -36,8 +36,8 @@ int libnet_buffer_shift(struct libnet_buffer *buffer,
 	return 0;
 }
 
-int libnet_buffer_shift_left(struct libnet_buffer *buffer,
-                             size_t shift_size)
+int netstack_buffer_shift_left(struct netstack_buffer *buffer,
+                               size_t shift_size)
 {
 	if (buffer->size < shift_size)
 		return -1;

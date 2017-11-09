@@ -1,13 +1,13 @@
-// =========================================================
-// libnet -- A network stack implementation for BareMetal OS
+// ===========================================================
+// netstack -- A network stack implementation for BareMetal OS
 //
 // Copyright (C) 2017 Return Infinity -- see LICENSE
-//==========================================================
+//============================================================
 
 /// @file pipe.h
 
-#ifndef LIBNET_PIPE_H
-#define LIBNET_PIPE_H
+#ifndef NETSTACK_PIPE_H
+#define NETSTACK_PIPE_H
 
 #ifdef __cplusplus
 extern "C"
@@ -17,7 +17,7 @@ extern "C"
 /// @brief Used to implement send
 /// and receive functions for the
 /// network stack.
-struct libnet_pipe
+struct netstack_pipe
 {
 	/// @brief Implementation data goes here.
 	void *data;
@@ -43,32 +43,32 @@ struct libnet_pipe
 /// The caller still must set the internal callback
 /// functions after this. This function is only for
 /// pointer safety.
-void libnet_pipe_init(struct libnet_pipe *pipe);
+void netstack_pipe_init(struct netstack_pipe *pipe);
 
 /// @brief Releases resources allocated by
 /// the pipe.
-void libnet_pipe_done(struct libnet_pipe *pipe);
+void netstack_pipe_done(struct netstack_pipe *pipe);
 
 /// @brief Moves the pipe from one structure to
 /// another. The contents of the old structure are
 /// erased.
-void libnet_pipe_move(struct libnet_pipe *dst,
-                      struct libnet_pipe *src);
+void netstack_pipe_move(struct netstack_pipe *dst,
+                        struct netstack_pipe *src);
 
 /// @brief Receives data.
-int libnet_pipe_recv(struct libnet_pipe *pipe,
-                     void *buf,
-                     unsigned long long int buf_size,
-                     unsigned long long int *recv_size);
+int netstack_pipe_recv(struct netstack_pipe *pipe,
+                       void *buf,
+                       unsigned long long int buf_size,
+                       unsigned long long int *recv_size);
 
 /// @brief Sends data.
-int libnet_pipe_send(struct libnet_pipe *pipe,
-                     const void *buf,
-                     unsigned long long int buf_size,
-                     unsigned long long int *recv_size);
+int netstack_pipe_send(struct netstack_pipe *pipe,
+                       const void *buf,
+                       unsigned long long int buf_size,
+                       unsigned long long int *recv_size);
 
 #ifdef __cplusplus
 } // extern "C"
 #endif
 
-#endif // LIBNET_PIPE_H
+#endif // NETSTACK_PIPE_H

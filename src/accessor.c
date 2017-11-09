@@ -1,16 +1,16 @@
-// =========================================================
-// libnet -- A network stack implementation for BareMetal OS
+// ===========================================================
+// netstack -- A network stack implementation for BareMetal OS
 //
 // Copyright (C) 2017 Return Infinity -- see LICENSE
-// =========================================================
+// ===========================================================
 
-#include <libnet/accessor.h>
+#include <netstack/accessor.h>
 
 #ifndef NULL
 #define NULL ((void *) 0x00)
 #endif
 
-void libnet_accessor_init(struct libnet_accessor *accessor)
+void netstack_accessor_init(struct netstack_accessor *accessor)
 {
 	accessor->data = NULL;
 	accessor->access_ethernet = NULL;

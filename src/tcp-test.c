@@ -1,11 +1,11 @@
-// =========================================================
-// libnet -- A network stack implementation for BareMetal OS
+// ===========================================================
+// netstack -- A network stack implementation for BareMetal OS
 //
 // Copyright (C) 2017 Return Infinity -- see LICENSE
-// =========================================================
+// ===========================================================
 
-#include <libnet/buffer.h>
-#include <libnet/tcp.h>
+#include <netstack/buffer.h>
+#include <netstack/tcp.h>
 
 #include <assert.h>
 #include <stdlib.h>
@@ -13,42 +13,42 @@
 
 static void test_port_parsing(void)
 {
-	struct libnet_tcp tcp;
+	struct netstack_tcp tcp;
 
-	libnet_tcp_init(&tcp);
+	netstack_tcp_init(&tcp);
 
-	int err = libnet_tcp_set_source(&tcp, "1", 1);
+	int err = netstack_tcp_set_source(&tcp, "1", 1);
 	assert(err == 0);
 	assert(tcp.source == 1);
 
-	err = libnet_tcp_set_destination(&tcp, "65535", 5);
+	err = netstack_tcp_set_destination(&tcp, "65535", 5);
 	assert(err == 0);
 	assert(tcp.destination == 65535);
 
 	// this should fail because 65536 is
 	// out of range for a port number
-	err = libnet_tcp_set_source(&tcp, "65536", 5);
+	err = netstack_tcp_set_source(&tcp, "65536", 5);
 	assert(err != 0);
 }
 
 static void test_pack(void)
 {
-	struct libnet_tcp tcp;
+	struct netstack_tcp tcp;
 
-	libnet_tcp_init(&tcp);
+	netstack_tcp_init(&tcp);
 
-	int err = libnet_tcp_set_source(&tcp, "80", 2);
+	int err = netstack_tcp_set_source(&tcp, "80", 2);
 	assert(err == 0);
 
-	err = libnet_tcp_set_destination(&tcp, "513", 3);
+	err = netstack_tcp_set_destination(&tcp, "513", 3);
 	assert(err == 0);
 
 	unsigned char bufdata[128];
 	memset(bufdata, 0, sizeof(bufdata));
 	strcat((char *) bufdata, "Hello, TCP!");
 
-	struct libnet_buffer buffer;
-	libnet_buffer_init(&buffer);
+	struct netstack_buffer buffer;
+	netstack_buffer_init(&buffer);
 	buffer.data = bufdata;
 	buffer.size = strlen((char *) bufdata);
 	buffer.reserved = sizeof(bufdata);
@@ -59,7 +59,7 @@ static void test_pack(void)
 	tcp.window_size = 0x5566;
 	tcp.urgent_pointer = 0x7788;
 
-	err = libnet_tcp_pack(&tcp, &buffer);
+	err = netstack_tcp_pack(&tcp, &buffer);
 	assert(err == 0);
 	// check source port
 	assert(bufdata[0] == 0);
@@ -130,15 +130,15 @@ static void test_unpack(void)
 	bufdata[18] = 0x11;
 	bufdata[19] = 0x99;
 
-	struct libnet_buffer buffer;
+	struct netstack_buffer buffer;
 	buffer.data = bufdata;
 	buffer.size = 20;
 	buffer.reserved = sizeof(buffer);
 
-	struct libnet_tcp tcp;
-	libnet_tcp_init(&tcp);
+	struct netstack_tcp tcp;
+	netstack_tcp_init(&tcp);
 
-	int err = libnet_tcp_unpack(&tcp, &buffer);
+	int err = netstack_tcp_unpack(&tcp, &buffer);
 	assert(err == 0);
 	assert(tcp.source == 0x20);
 	assert(tcp.destination = 0x100);

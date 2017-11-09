@@ -1,13 +1,13 @@
-// =========================================================
-// libnet -- A network stack implementation for BareMetal OS
+// ===========================================================
+// netstack -- A network stack implementation for BareMetal OS
 //
 // Copyright (C) 2017 Return Infinity -- see LICENSE
-//==========================================================
+//============================================================
 
 /// @file buffer.h
 
-#ifndef LIBNET_BUFFER_H
-#define LIBNET_BUFFER_H
+#ifndef NETSTACK_BUFFER_H
+#define NETSTACK_BUFFER_H
 
 #include <stdlib.h>
 
@@ -17,7 +17,7 @@ extern "C"
 #endif
 
 /// @brief A general purpose buffer.
-struct libnet_buffer
+struct netstack_buffer
 {
 	/// @brief Data associated with the buffer.
 	void *data;
@@ -28,21 +28,21 @@ struct libnet_buffer
 };
 
 /// @brief Initializes a buffer.
-void libnet_buffer_init(struct libnet_buffer *buffer);
+void netstack_buffer_init(struct netstack_buffer *buffer);
 
 /// @brief Shifts the buffer right, to make
 /// memory available in the beginning of the
 /// block.
-int libnet_buffer_shift(struct libnet_buffer *buffer,
-                        size_t shift_size);
+int netstack_buffer_shift(struct netstack_buffer *buffer,
+                          size_t shift_size);
 
 /// @brief Shifts the buffer left, to erase
 /// memory in the beginning of the block.
-int libnet_buffer_shift_left(struct libnet_buffer *buffer,
-                             size_t shift_size);
+int netstack_buffer_shift_left(struct netstack_buffer *buffer,
+                               size_t shift_size);
 
 #ifdef __cplusplus
 } // extern "C"
 #endif
 
-#endif // LIBNET_BUFFER_H
+#endif // NETSTACK_BUFFER_H

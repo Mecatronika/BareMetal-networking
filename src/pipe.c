@@ -1,16 +1,16 @@
-// =========================================================
-// libnet -- A network stack implementation for BareMetal OS
+// ===========================================================
+// netstack -- A network stack implementation for BareMetal OS
 //
 // Copyright (C) 2017 Return Infinity -- see LICENSE
-// =========================================================
+// ===========================================================
 
-#include <libnet/pipe.h>
+#include <netstack/pipe.h>
 
 #ifndef NULL
 #define NULL ((void *) 0x00)
 #endif
 
-void libnet_pipe_init(struct libnet_pipe *pipe)
+void netstack_pipe_init(struct netstack_pipe *pipe)
 {
 	pipe->data = NULL;
 	pipe->done = NULL;
@@ -18,25 +18,25 @@ void libnet_pipe_init(struct libnet_pipe *pipe)
 	pipe->send = NULL;
 }
 
-void libnet_pipe_done(struct libnet_pipe *pipe)
+void netstack_pipe_done(struct netstack_pipe *pipe)
 {
 	if (pipe->done != NULL)
 		pipe->done(pipe->data);
 }
 
-void libnet_pipe_move(struct libnet_pipe *dst,
-                      struct libnet_pipe *src)
+void netstack_pipe_move(struct netstack_pipe *dst,
+                        struct netstack_pipe *src)
 {
 	// copy the structure
 	*dst = *src;
 	// zero the old structure
-	libnet_pipe_init(src);
+	netstack_pipe_init(src);
 }
 
-int libnet_pipe_recv(struct libnet_pipe *pipe,
-                     void *buf,
-                     unsigned long long int buf_size,
-                     unsigned long long int *recv_size)
+int netstack_pipe_recv(struct netstack_pipe *pipe,
+                       void *buf,
+                       unsigned long long int buf_size,
+                       unsigned long long int *recv_size)
 {
 	if (pipe->recv == NULL)
 		return -1;
@@ -44,10 +44,10 @@ int libnet_pipe_recv(struct libnet_pipe *pipe,
 	return pipe->recv(pipe->data, buf, buf_size, recv_size);
 }
 
-int libnet_pipe_send(struct libnet_pipe *pipe,
-                     const void *buf,
-                     unsigned long long int buf_size,
-                     unsigned long long int *recv_size)
+int netstack_pipe_send(struct netstack_pipe *pipe,
+                       const void *buf,
+                       unsigned long long int buf_size,
+                       unsigned long long int *recv_size)
 {
 	if (pipe->recv == NULL)
 		return -1;

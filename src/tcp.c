@@ -1,14 +1,14 @@
-// =========================================================
-// libnet -- A network stack implementation for BareMetal OS
+// ===========================================================
+// netstack -- A network stack implementation for BareMetal OS
 //
 // Copyright (C) 2017 Return Infinity -- see LICENSE
-// =========================================================
+// ===========================================================
 
-#include <libnet/tcp.h>
+#include <netstack/tcp.h>
 
-#include <libnet/buffer.h>
-#include <libnet/error.h>
-#include <libnet/mutator.h>
+#include <netstack/buffer.h>
+#include <netstack/error.h>
+#include <netstack/mutator.h>
 
 #include <limits.h>
 
@@ -41,19 +41,19 @@ static int parse_port(unsigned int *port_ptr,
 			port += c - '0';
 		}
 		else
-			return LIBNET_ERROR_BAD_FIELD;
+			return NETSTACK_ERROR_BAD_FIELD;
 	}
 
 	// port exceeds maximum
 	if (port > 65535)
-		return LIBNET_ERROR_BAD_FIELD;
+		return NETSTACK_ERROR_BAD_FIELD;
 
 	*port_ptr = (unsigned int) port;
 
-	return LIBNET_ERROR_NONE;
+	return NETSTACK_ERROR_NONE;
 }
 
-void libnet_tcp_init(struct libnet_tcp *tcp)
+void netstack_tcp_init(struct netstack_tcp *tcp)
 {
 	tcp->source = 0;
 	tcp->destination = 0;
@@ -66,33 +66,33 @@ void libnet_tcp_init(struct libnet_tcp *tcp)
 	tcp->urgent_pointer = 0;
 }
 
-int libnet_tcp_set_source(struct libnet_tcp *tcp,
-                          const char *str,
-                          size_t str_size)
+int netstack_tcp_set_source(struct netstack_tcp *tcp,
+                            const char *str,
+                            size_t str_size)
 {
 	return parse_port(&tcp->source, str, str_size);
 }
 
-int libnet_tcp_set_destination(struct libnet_tcp *tcp,
-                               const char *str,
-                               size_t str_size)
+int netstack_tcp_set_destination(struct netstack_tcp *tcp,
+                                 const char *str,
+                                 size_t str_size)
 {
 	return parse_port(&tcp->destination, str, str_size);
 }
 
-int libnet_tcp_mutate(struct libnet_tcp *tcp,
-                      const struct libnet_mutator *mutator)
+int netstack_tcp_mutate(struct netstack_tcp *tcp,
+                        const struct netstack_mutator *mutator)
 {
 	if (mutator->mutate_tcp == NULL)
-		return LIBNET_ERROR_NONE;
+		return NETSTACK_ERROR_NONE;
 
 	return mutator->mutate_tcp(mutator->data, tcp);
 }
 
-int libnet_tcp_pack(struct libnet_tcp *tcp,
-                    struct libnet_buffer *buffer)
+int netstack_tcp_pack(struct netstack_tcp *tcp,
+                      struct netstack_buffer *buffer)
 {
-	int err = libnet_buffer_shift(buffer, 20);
+	int err = netstack_buffer_shift(buffer, 20);
 	if (err != 0)
 		return err;
 
@@ -120,23 +120,23 @@ int libnet_tcp_pack(struct libnet_tcp *tcp,
 	// data offset (5 32-bit words)
 	header[12] = (5 << 4);
 	// control bits
-	if (tcp->control_bits & LIBNET_TCP_NS)
+	if (tcp->control_bits & NETSTACK_TCP_NS)
 		header[12] |= 0x01;
-	if (tcp->control_bits & LIBNET_TCP_CWR)
+	if (tcp->control_bits & NETSTACK_TCP_CWR)
 		header[13] |= 0x80;
-	if (tcp->control_bits & LIBNET_TCP_ECE)
+	if (tcp->control_bits & NETSTACK_TCP_ECE)
 		header[13] |= 0x40;
-	if (tcp->control_bits & LIBNET_TCP_URG)
+	if (tcp->control_bits & NETSTACK_TCP_URG)
 		header[13] |= 0x20;
-	if (tcp->control_bits & LIBNET_TCP_ACK)
+	if (tcp->control_bits & NETSTACK_TCP_ACK)
 		header[13] |= 0x10;
-	if (tcp->control_bits & LIBNET_TCP_PSH)
+	if (tcp->control_bits & NETSTACK_TCP_PSH)
 		header[13] |= 0x08;
-	if (tcp->control_bits & LIBNET_TCP_RST)
+	if (tcp->control_bits & NETSTACK_TCP_RST)
 		header[13] |= 0x04;
-	if (tcp->control_bits & LIBNET_TCP_SYN)
+	if (tcp->control_bits & NETSTACK_TCP_SYN)
 		header[13] |= 0x02;
-	if (tcp->control_bits & LIBNET_TCP_FIN)
+	if (tcp->control_bits & NETSTACK_TCP_FIN)
 		header[13] |= 0x01;
 	// window size
 	header[14] = (tcp->window_size & 0xff00) >> 8;
@@ -148,14 +148,14 @@ int libnet_tcp_pack(struct libnet_tcp *tcp,
 	header[18] = (tcp->urgent_pointer & 0xff00) >> 8;
 	header[19] = (tcp->urgent_pointer & 0x00ff) >> 0;
 	// TODO : checksum
-	return LIBNET_ERROR_NONE;
+	return NETSTACK_ERROR_NONE;
 }
 
-int libnet_tcp_unpack(struct libnet_tcp *tcp,
-                      struct libnet_buffer *buffer)
+int netstack_tcp_unpack(struct netstack_tcp *tcp,
+                        struct netstack_buffer *buffer)
 {
 	if (buffer->size < 20)
-		return LIBNET_ERROR_MISSING_DATA;
+		return NETSTACK_ERROR_MISSING_DATA;
 
 	unsigned char *header = (unsigned char *) buffer->data;
 
@@ -184,23 +184,23 @@ int libnet_tcp_unpack(struct libnet_tcp *tcp,
 	tcp->control_bits = 0;
 
 	if (header[12] & 0x01)
-		tcp->control_bits |= LIBNET_TCP_NS;
+		tcp->control_bits |= NETSTACK_TCP_NS;
 	if (header[13] & 0x80)
-		tcp->control_bits |= LIBNET_TCP_CWR;
+		tcp->control_bits |= NETSTACK_TCP_CWR;
 	if (header[13] & 0x40)
-		tcp->control_bits |= LIBNET_TCP_ECE;
+		tcp->control_bits |= NETSTACK_TCP_ECE;
 	if (header[13] & 0x20)
-		tcp->control_bits |= LIBNET_TCP_URG;
+		tcp->control_bits |= NETSTACK_TCP_URG;
 	if (header[13] & 0x10)
-		tcp->control_bits |= LIBNET_TCP_ACK;
+		tcp->control_bits |= NETSTACK_TCP_ACK;
 	if (header[13] & 0x08)
-		tcp->control_bits |= LIBNET_TCP_PSH;
+		tcp->control_bits |= NETSTACK_TCP_PSH;
 	if (header[13] & 0x04)
-		tcp->control_bits |= LIBNET_TCP_RST;
+		tcp->control_bits |= NETSTACK_TCP_RST;
 	if (header[13] & 0x02)
-		tcp->control_bits |= LIBNET_TCP_SYN;
+		tcp->control_bits |= NETSTACK_TCP_SYN;
 	if (header[13] & 0x01)
-		tcp->control_bits |= LIBNET_TCP_FIN;
+		tcp->control_bits |= NETSTACK_TCP_FIN;
 
 	tcp->window_size = 0;
 	tcp->window_size |= ((unsigned int) header[14]) << 8;
@@ -214,5 +214,5 @@ int libnet_tcp_unpack(struct libnet_tcp *tcp,
 	tcp->urgent_pointer |= ((unsigned int) header[18]) << 8;
 	tcp->urgent_pointer |= ((unsigned int) header[19]) << 0;
 
-	return LIBNET_ERROR_NONE;
+	return NETSTACK_ERROR_NONE;
 }

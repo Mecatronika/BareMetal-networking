@@ -21,7 +21,7 @@ $CC $CFLAGS -c tcp.c -o tcp.o
 AR=ar
 ARFLAGS=rcs
 
-$AR $ARFLAGS libnet.a \
+$AR $ARFLAGS libnetstack.a \
 	buffer.o \
 	crc.o \
 	crc32.o \
@@ -34,8 +34,8 @@ $AR $ARFLAGS libnet.a \
 	stack.o \
 	tcp.o
 
-$CC $CFLAGS buffer-test.c -o buffer-test libnet.a
-$CC $CFLAGS crc-test.c -o crc-test libnet.a
-$CC $CFLAGS mac-test.c -o mac-test libnet.a
-$CC $CFLAGS ethernet-test.c -o ethernet-test libnet.a
-$CC $CFLAGS ipv6-test.c -o ipv6-test libnet.a
+$CC $CFLAGS buffer-test.c -o buffer-test libnetstack.a
+$CC $CFLAGS crc-test.c -o crc-test libnetstack.a
+$CC $CFLAGS mac-test.c -o mac-test libnetstack.a
+$CC $CFLAGS ethernet-test.c -o ethernet-test libnetstack.a
+$CC $CFLAGS ipv6-test.c -o ipv6-test libnetstack.a

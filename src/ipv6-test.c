@@ -1,12 +1,12 @@
-// =========================================================
-// libnet -- A network stack implementation for BareMetal OS
+// ===========================================================
+// netstack -- A network stack implementation for BareMetal OS
 //
 // Copyright (C) 2017 Return Infinity -- see LICENSE
-// =========================================================
+// ===========================================================
 
-#include <libnet/ipv6.h>
+#include <netstack/ipv6.h>
 
-#include <libnet/buffer.h>
+#include <netstack/buffer.h>
 
 #include <assert.h>
 #include <stdlib.h>
@@ -14,13 +14,13 @@
 
 static void test_address_parse(void)
 {
-	struct libnet_ipv6_address address;
+	struct netstack_ipv6_address address;
 
-	libnet_ipv6_address_init(&address);
+	netstack_ipv6_address_init(&address);
 
 	const char address_str[] = "2001:0db8:85a3:0000:0000:8a2e:0370:7334";
 
-	int err = libnet_ipv6_address_parse(&address,
+	int err = netstack_ipv6_address_parse(&address,
 	                                    address_str,
 	                                    sizeof(address_str) - 1);
 	assert(err == 0);
@@ -53,26 +53,26 @@ static void test_address_parse(void)
 
 static void test_pack(void)
 {
-	struct libnet_ipv6 ipv6;
-	libnet_ipv6_init(&ipv6);
+	struct netstack_ipv6 ipv6;
+	netstack_ipv6_init(&ipv6);
 
-	int err = libnet_ipv6_set_source(&ipv6, "0011:2233:4455:6677:8899:aabb:ccdd:eeff", 39);
+	int err = netstack_ipv6_set_source(&ipv6, "0011:2233:4455:6677:8899:aabb:ccdd:eeff", 39);
 	assert(err == 0);
 
-	err = libnet_ipv6_set_destination(&ipv6, "ff00:ee11:dd22:cc33:bb44:aa55:9966:8877", 39);
+	err = netstack_ipv6_set_destination(&ipv6, "ff00:ee11:dd22:cc33:bb44:aa55:9966:8877", 39);
 	assert(err == 0);
 
 	unsigned char bufdata[128];
 	memset(bufdata, 0, sizeof(bufdata));
 	strcpy((char *) bufdata, "msg");
 
-	struct libnet_buffer buffer;
-	libnet_buffer_init(&buffer);
+	struct netstack_buffer buffer;
+	netstack_buffer_init(&buffer);
 	buffer.data = bufdata;
 	buffer.size = 4;
 	buffer.reserved = sizeof(bufdata);
 
-	err = libnet_ipv6_pack(&ipv6, &buffer);
+	err = netstack_ipv6_pack(&ipv6, &buffer);
 	assert(err == 0);
 	// check for IP version 6
 	assert((bufdata[0] & 0xf0) == 0x60);
@@ -145,17 +145,17 @@ static void test_unpack(void)
 	bufdata[42] = 's';
 	bufdata[43] = 't';
 
-	struct libnet_buffer buffer;
+	struct netstack_buffer buffer;
 	buffer.data = bufdata;
 	buffer.size = 40;
 	buffer.reserved = sizeof(bufdata);
 
-	struct libnet_ipv6 ipv6;
-	libnet_ipv6_init(&ipv6);
+	struct netstack_ipv6 ipv6;
+	netstack_ipv6_init(&ipv6);
 
-	int err = libnet_ipv6_unpack(&ipv6, &buffer);
+	int err = netstack_ipv6_unpack(&ipv6, &buffer);
 	assert(err == 0);
-	assert(ipv6.protocol == LIBNET_IP_UDP);
+	assert(ipv6.protocol == NETSTACK_IP_UDP);
 	assert(ipv6.length == 4);
 	assert(ipv6.hop_limit == 0xfe);
 	assert(memcmp(ipv6.source.octets, "\x12\x21\x12\x21\x12\x21\x12\x21\x12\x21\x12\x21\x12\x21\x12\x21", 16) == 0);

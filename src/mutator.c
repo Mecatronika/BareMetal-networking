@@ -1,16 +1,16 @@
-// =========================================================
-// libnet -- A network stack implementation for BareMetal OS
+// ===========================================================
+// netstack -- A network stack implementation for BareMetal OS
 //
 // Copyright (C) 2017 Return Infinity -- see LICENSE
-// =========================================================
+// ===========================================================
 
-#include <libnet/mutator.h>
+#include <netstack/mutator.h>
 
 #ifndef NULL
 #define NULL ((void *) 0x00)
 #endif
 
-void libnet_mutator_init(struct libnet_mutator *mutator)
+void netstack_mutator_init(struct netstack_mutator *mutator)
 {
 	mutator->data = NULL;
 	mutator->mutate_ethernet = NULL;

@@ -1,20 +1,20 @@
-// =========================================================
-// libnet -- A network stack implementation for BareMetal OS
+// ===========================================================
+// netstack -- A network stack implementation for BareMetal OS
 //
 // Copyright (C) 2017 Return Infinity -- see LICENSE
-// =========================================================
+// ===========================================================
 
-#include <libnet/mac.h>
+#include <netstack/mac.h>
 
-void libnet_mac_init(struct libnet_mac *mac)
+void netstack_mac_init(struct netstack_mac *mac)
 {
 	for (unsigned int i = 0; i < 6; i++)
 		mac->octets[i] = 0;
 }
 
-int libnet_mac_parse(struct libnet_mac *mac,
-                     const char *str,
-                     unsigned long long int len)
+int netstack_mac_parse(struct netstack_mac *mac,
+                       const char *str,
+                       unsigned long long int len)
 {
 	unsigned long long int octets_found = 0;
 
@@ -71,9 +71,9 @@ int libnet_mac_parse(struct libnet_mac *mac,
 	return 0;
 }
 
-int libnet_mac_write(const struct libnet_mac *mac,
-                     char *str,
-                     unsigned long long int len)
+int netstack_mac_write(const struct netstack_mac *mac,
+                       char *str,
+                       unsigned long long int len)
 {
 	if (len < 18)
 		return -1;

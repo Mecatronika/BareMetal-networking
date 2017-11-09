@@ -1,12 +1,12 @@
-// =========================================================
-// libnet -- A network stack implementation for BareMetal OS
+// ===========================================================
+// netstack -- A network stack implementation for BareMetal OS
 //
 // Copyright (C) 2017 Return Infinity -- see LICENSE
-// =========================================================
+// ===========================================================
 
-#include <libnet/ethernet.h>
-#include <libnet/buffer.h>
-#include <libnet/stack.h>
+#include <netstack/ethernet.h>
+#include <netstack/buffer.h>
+#include <netstack/stack.h>
 
 #include <assert.h>
 #include <stdlib.h>
@@ -15,23 +15,23 @@
 static void test_pack(void)
 {
 	// Setup the ethernet protocol
-	struct libnet_ethernet ethernet;
-	libnet_ethernet_init(&ethernet);
-	int err = libnet_ethernet_set_source(&ethernet, "12:34:56:78:9a:bc", 17);
+	struct netstack_ethernet ethernet;
+	netstack_ethernet_init(&ethernet);
+	int err = netstack_ethernet_set_source(&ethernet, "12:34:56:78:9a:bc", 17);
 	assert(err == 0);
-	err = libnet_ethernet_set_destination(&ethernet, "11:22:33:44:55:66", 17);
+	err = netstack_ethernet_set_destination(&ethernet, "11:22:33:44:55:66", 17);
 	assert(err == 0);
 
 	// Setup the buffer
 	unsigned char bufdata[128];
 	memset(bufdata, 0, sizeof(bufdata));
 	strcpy((char *) bufdata, "msg");
-	struct libnet_buffer buffer;
+	struct netstack_buffer buffer;
 	buffer.data = bufdata;
 	buffer.size = 64;
 	buffer.reserved = sizeof(bufdata);
 
-	err = libnet_ethernet_pack(&ethernet, &buffer);
+	err = netstack_ethernet_pack(&ethernet, &buffer);
 	assert(err == 0);
 	// check buffer size is set correctly
 	//   data size: 64
@@ -70,9 +70,9 @@ static void test_pack(void)
 
 static void test_unpack(void)
 {
-	struct libnet_ethernet ethernet;
+	struct netstack_ethernet ethernet;
 
-	libnet_ethernet_init(&ethernet);
+	netstack_ethernet_init(&ethernet);
 
 	char bufdata[128];
 	// set destination
@@ -103,17 +103,17 @@ static void test_unpack(void)
 	bufdata[20] = 0;
 	bufdata[21] = 0;
 
-	struct libnet_buffer buffer;
-	libnet_buffer_init(&buffer);
+	struct netstack_buffer buffer;
+	netstack_buffer_init(&buffer);
 	buffer.data = bufdata;
 	buffer.size = 22;
 	buffer.reserved = sizeof(bufdata);
 
-	int err = libnet_ethernet_unpack(&ethernet, &buffer);
+	int err = netstack_ethernet_unpack(&ethernet, &buffer);
 	assert(err == 0);
 	assert(memcmp(ethernet.destination.octets, "\x23\x32\x23\x32\x23\x32", 6) == 0);
 	assert(memcmp(ethernet.source.octets, "\x12\x21\x12\x21\x12\x21", 6) == 0);
-	assert(ethernet.type == LIBNET_ETHERTYPE_NONE);
+	assert(ethernet.type == NETSTACK_ETHERTYPE_NONE);
 	assert(ethernet.length == 4);
 	// TODO : assert(ethernet.checksum == 0);
 	assert(memcmp(buffer.data, "test", 4) == 0);
