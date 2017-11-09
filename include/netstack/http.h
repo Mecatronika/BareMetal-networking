@@ -7,7 +7,9 @@
 #ifndef NETSTACK_HTTP_H
 #define NETSTACK_HTTP_H
 
-#ifndef __cplusplus
+#include <netstack/protocol.h>
+
+#ifdef __cplusplus
 extern "C"
 {
 #endif
@@ -63,9 +65,12 @@ struct netstack_http_request
 
 struct netstack_http
 {
+	/// @brief Contains the HTTP protocol
+	/// callbacks.
+	struct netstack_protocol base;
 	/// @brief Indicates whether responses or
 	/// requests should be sent.
-	struct netstack_http_mode mode;
+	enum netstack_http_mode mode;
 	/// @brief Contains the contents of a response
 	/// that was either received or sent.
 	struct netstack_http_response response;
@@ -73,6 +78,10 @@ struct netstack_http
 	/// that was either received or sent.
 	struct netstack_http_request request;
 };
+
+void netstack_http_init(struct netstack_http *http);
+
+void netstack_http_done(struct netstack_http *http);
 
 #ifdef __cplusplus
 } // extern "C"

@@ -13,6 +13,7 @@ libfiles += buffer.o
 libfiles += crc.o
 libfiles += crc32.o
 libfiles += ethernet.o
+libfiles += http.o
 libfiles += ipv6.o
 libfiles += mac.o
 libfiles += mutator.o

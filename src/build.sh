@@ -10,6 +10,7 @@ $CC $CFLAGS -c buffer.c -o buffer.o
 $CC $CFLAGS -c crc.c -o crc.o
 $CC $CFLAGS -c crc32.c -o crc32.o
 $CC $CFLAGS -c ethernet.c -o ethernet.o
+$CC $CFLAGS -c http.c -o http.o
 $CC $CFLAGS -c ipv6.c -o ipv6.o
 $CC $CFLAGS -c mac.c -o mac.o
 $CC $CFLAGS -c mutator.c -o mutator.o
@@ -26,6 +27,7 @@ $AR $ARFLAGS libnetstack.a \
 	crc.o \
 	crc32.o \
 	ethernet.o \
+	http.o \
 	ipv6.o \
 	mac.o \
 	mutator.o \
