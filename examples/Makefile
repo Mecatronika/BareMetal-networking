@@ -1,4 +1,4 @@
-VPATH += ../include/libnet
+VPATH += ../include/netstack
 VPATH += ../src
 
 CFLAGS += -Wall -Wextra -Werror -Wfatal-errors -std=c99
