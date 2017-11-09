@@ -1,20 +1,20 @@
 // =========================================================
-// libnet -- A network stack implementation for BareMetal OS
+// netstack -- A network stack implementation for BareMetal OS
 //
 // Copyright (C) 2017 Return Infinity -- see LICENSE
 // =========================================================
 
-#include <libnet/posix/socket.h>
+#include <netstack/posix/socket.h>
 
 #include <unistd.h>
 
-void libnet_socket_init(struct libnet_socket *socket)
+void netstack_socket_init(struct netstack_socket *socket)
 {
-	libnet_pipe_init(&socket->base);
+	netstack_pipe_init(&socket->base);
 	socket->fd = -1;
 }
 
-void libnet_socket_done(struct libnet_socket *socket)
+void netstack_socket_done(struct netstack_socket *socket)
 {
 	if (socket->fd >= 0)
 	{
