@@ -128,11 +128,11 @@ static void test_unpack(void)
 	bufdata[17] = 0;
 	// urgent pointer
 	bufdata[18] = 0x11;
-	bufdata[18] = 0x99;
+	bufdata[19] = 0x99;
 
 	struct libnet_buffer buffer;
 	buffer.data = bufdata;
-	buffer.size = 12;
+	buffer.size = 20;
 	buffer.reserved = sizeof(buffer);
 
 	struct libnet_tcp tcp;
