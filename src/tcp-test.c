@@ -55,7 +55,7 @@ static void test_pack(void)
 
 	tcp.sequence = 0x01020304;
 	tcp.acknowledgment = 0xa0b0c0d0;
-	tcp.control_bits = LIBNET_TCP_NS | LIBNET_TCP_FIN;
+	tcp.control_bits = NETSTACK_TCP_NS | NETSTACK_TCP_FIN;
 	tcp.window_size = 0x5566;
 	tcp.urgent_pointer = 0x7788;
 
@@ -144,7 +144,7 @@ static void test_unpack(void)
 	assert(tcp.destination = 0x100);
 	assert(tcp.sequence == 0x01020102);
 	assert(tcp.acknowledgment == 0x40304030);
-	assert((tcp.control_bits & LIBNET_TCP_NS) == LIBNET_TCP_NS);
+	assert((tcp.control_bits & NETSTACK_TCP_NS) == NETSTACK_TCP_NS);
 	assert(tcp.window_size == 0x2112);
 	assert(tcp.urgent_pointer == 0x1199);
 }
