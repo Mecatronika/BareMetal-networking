@@ -17,7 +17,7 @@ static int mutate_ethernet(const void *mutator_data,
 {
 	(void) mutator_data;
 
-	ethernet->type = LIBNET_ETHERTYPE_IPV6;
+	ethernet->type = NETSTACK_ETHERTYPE_IPV6;
 
 	int err = 0;
 	err |= netstack_ethernet_set_source(ethernet, "00:11:22:33:44:55", 17);
